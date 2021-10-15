@@ -87,7 +87,7 @@ export default {
 .el-aside {
   background-color: #545c64;
 }
-.el-main {
-  background-color: yellow;
-}
+// .el-main {
+//   // background-color: yellow;
+// }
 </style>
