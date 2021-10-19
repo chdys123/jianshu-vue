@@ -8,6 +8,7 @@ export default {
   name: "app",
   mounted() {
     console.log("启动了")
+    
   }
     
 }

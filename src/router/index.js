@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
+// 没有登录不能访问到后台界面。需要配置路由守卫。
+
 const routes=[
     {
         path:"/",

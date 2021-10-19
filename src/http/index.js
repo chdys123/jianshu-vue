@@ -1,11 +1,13 @@
 import axios from "axios"
 
 
+
 // axios实例
 let instance=axios.create({
     baseURL:"http://localhost:3000",
     timeout:5000,
 })
+instance.defaults.headers.common['Authorization'] = "Bearer "+localStorage.getItem("token");
 
 // 请求拦截器
 
@@ -35,18 +37,17 @@ async function http(options={}){
             url:options.path,
             params:options.params
         }).then(res=>{
-            result=res
-
+            result=res.data
         }).catch(err=>{
             result=err
         })
     }else if(options.method=="post"||options.method=="put"){
-        instance({
+        await instance({
             method:options.method,
             url:options.path,
             data:options.params
         }).then(res=>{
-            result=res
+            result=res.data
 
         }).catch(err=>{
             result=err
