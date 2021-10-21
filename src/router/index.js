@@ -46,6 +46,14 @@ const routes=[
                 }
             },
             {
+                path:"article/update",
+                name:"ArticleUpdate",
+                component:()=>import("../views/Article/update.vue"),
+                meta:{
+                    title:"修改文章"
+                }
+            },
+            {
                 path:"comment",
                 name:"Comment",
                 component:()=>import("../views/Comment/index.vue"),

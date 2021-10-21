@@ -4,8 +4,8 @@
       <div class="sys-title">简书后台管理系统</div>
       <div class="header-right">
         <a>网站首页</a>
-        <img :src="$store.state.user.avatar" alt="" class="header-userImg">
-        <span>{{$store.state.user.username}}</span>
+        <img :src="$store.state.user.avatar" alt="" class="header-userImg" />
+        <span>{{ $store.state.user.username }}</span>
         <el-button type="primary" @click="quit">退出</el-button>
       </div>
     </el-header>
@@ -51,6 +51,7 @@
       </el-aside>
       <el-main>
         <router-view></router-view>
+          
       </el-main>
     </el-container>
   </el-container>
@@ -88,6 +89,9 @@ export default {
       if (res.code == 200) {
         // 把信息存vuex
         this.$store.commit("updateUser", res.user);
+        localStorage.setItem("user", JSON.stringify(res.user));
+       
+
       } else {
         this.$message.error("登录认证失败");
       }
@@ -112,7 +116,7 @@ export default {
   }
   .header-right {
     float: right;
-    .header-userImg{
+    .header-userImg {
       width: 30px;
       border-radius: 50%;
       vertical-align: middle;

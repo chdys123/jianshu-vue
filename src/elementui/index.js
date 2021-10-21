@@ -1,6 +1,6 @@
 // 按需引入组件
 import { ElMessage, ElDialog, ElButton ,ElSwitch,ElContainer,ElHeader,ElAside,ElMain,ElMenu,
-ElSubMenu,ElMenuItem,ElCard,ElForm,ElFormItem,ElInput,ElUpload,ElCol,ElRadio} from 'element-plus'
+ElSubMenu,ElMenuItem,ElCard,ElForm,ElFormItem,ElInput,ElUpload,ElCol,ElRadio,ElScrollbar,ElTable,ElTableColumn,ElPagination,ElPopconfirm,ElPopover} from 'element-plus'
 //引入elementui样式
 import 'element-plus/dist/index.css'
 export default {
@@ -14,7 +14,9 @@ export default {
             ElMenu,ElSubMenu,ElMenuItem,
             ElCard,
             ElForm,ElFormItem,ElInput,
-            ElUpload,ElCol,ElRadio
+            ElUpload,ElCol,ElRadio,ElScrollbar,
+            ElPopconfirm,
+            ElTable,ElTableColumn,ElPagination,ElPopover,
         ]
         // 方法调用
         const plugins = [

@@ -93,6 +93,8 @@ export default {
           if (res.code == 200) {
             proxy.$message.success("个人信息修改成功");
             proxy.$store.commit("updateUser", toRaw(form.data));
+            localStorage.setItem("user", JSON.stringify(res.user));
+
           } else if (res.code == 300) {
             proxy.$message.error("个人信息修改失败");
           } else if (res.code == 500) {

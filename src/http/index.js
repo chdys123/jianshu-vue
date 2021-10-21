@@ -12,7 +12,7 @@ instance.defaults.headers.common['Authorization'] = "Bearer "+localStorage.getIt
 // 请求拦截器
 
 instance.interceptors.request.use(config=>{
-    console.log("请求拦截器")
+    // console.log("请求拦截器")
     return config
 },err=>{
     return Promise.reject(error)
@@ -21,7 +21,7 @@ instance.interceptors.request.use(config=>{
 // 响应拦截器
 
 instance.interceptors.response.use(res=>{
-    console.log("响应拦截器")
+    // console.log("响应拦截器")
     return res
 },err=>{
     return Promise.reject(error)

@@ -58,8 +58,9 @@ export default {
 
             // 登录成功之后 保存token。在localStorage
             localStorage.setItem("token", res.token);
-            // 把用户信息存vuex
-            // proxy.$store.commit("updateUser", res.user);
+            // 把用户信息存localStorage
+            localStorage.setItem("user", JSON.stringify(res.user));
+            
 
             proxy.$router.push("/admin");
           } else if (res.code == 300) {
