@@ -3,86 +3,75 @@ import { createRouter, createWebHistory } from 'vue-router'
 // 没有登录不能访问到后台界面。需要配置路由守卫。
 
 const routes=[
+    // 文章展示页面
     {
         path:"/",
         name:"Web",
         component:()=>import("../views/Web/index.vue")
     },
+    // 普通用户后台
     {
-        path:"/admin",
-        name:"Admin",
-        component:()=>import("../views/Home/index.vue"),
+        path:"/user",
+        name:"user",
+        component:()=>import("../views/user/index.vue"),
         children:[
+            // 主页
             {
-                path:'user/personal',
-                name:'UserPersonal',
-                component:()=>import("../views/User/personal.vue"),
-                meta:{
-                    title:"个人资料"
-                }
+                path:"mainPage",
+                name:"mainPage",
+                component:()=>import("../views/user/mainPage/index.vue")
             },
+            // 创作
             {
-                path:'user/password',
-                name:'UserPassword',
-                component:()=>import("../views/User/password.vue"),
-                meta:{
-                    title:"修改密码"
-                }
+                path:"create",
+                name:"create",
+                component:()=>import("../views/user/create/index.vue")
             },
+            // 作品管理
             {
-                path:"article",
-                name:"AdminArticle",
-                component:()=>import("../views/Article/index.vue"),
-                meta:{
-                    title:"文章列表"
-                }
+                path:"manger/article",
+                name:"mangerArticle",
+                component:()=>import("../views/user/manger/article.vue")
             },
+            // 评论管理
             {
-                path:"article/add",
-                name:"ArticleAdd",
-                component:()=>import("../views/Article/add.vue"),
-                meta:{
-                    title:"发布文章"
-                }
+                path:"manger/comment",
+                name:"mangerComment",
+                component:()=>import("../views/user/manger/comment.vue")
             },
+            // 作品数据
             {
-                path:"article/update",
-                name:"ArticleUpdate",
-                component:()=>import("../views/Article/update.vue"),
-                meta:{
-                    title:"修改文章"
-                }
+                path:"data/article",
+                name:"dataArticle",
+                component:()=>import("../views/user/data/article.vue")
             },
+            // 粉丝数据
             {
-                path:"comment",
-                name:"Comment",
-                component:()=>import("../views/Comment/index.vue"),
-                meta:{
-                    title:"评论管理"
-                }
+                path:"data/fans",
+                name:"dataFans",
+                component:()=>import("../views/user/data/fans.vue")
             },
+            // 设置
             {
-                path:"fans",
-                name:"Fans",
-                component:()=>import("../views/Fans/index.vue"),
-                meta:{
-                    title:"粉丝管理"
-                }
+                path:"setup",
+                name:"setup",
+                component:()=>import("../views/user/setup/index.vue")
             },
-            {
-                path:"star",
-                name:"Star",
-                component:()=>import("../views/Star/index.vue"),
-                meta:{
-                    title:"点赞管理"
-                }
-            }
+            
         ]
+    },
+    // 管理员路由
+    {
+
     },
     {
         path:'/login',
         name:"Login",
         component:()=>import("../views/Login/index.vue")
+    },
+    // 注册
+    {
+
     }
 
 

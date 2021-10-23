@@ -1,5 +1,9 @@
 <template>
-    <div>评论管理</div>
+    <div>
+      <el-table>
+        <el-table-column></el-table-column>
+      </el-table>
+    </div>
   </template>
   
   

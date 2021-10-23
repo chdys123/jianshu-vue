@@ -12,51 +12,55 @@
     <el-container>
       <el-aside width="250px">
         <el-menu
-          default-active="/admin/user"
+        default-active="/user/mainPage"
           background-color="#F8F8F8"
           text-color="#222222"
           active-text-color="#FF5E5E"
           router
         >
-          <el-menu-item index="">
+          <el-menu-item index="/user/mainPage">
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <i class="el-icon-magic-stick"></i>
             <span class="home-menu-title">主页</span>
           </el-menu-item>
-          <el-menu-item index="/admin/article/add">
+          <el-menu-item index="/user/create">
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <i class="el-icon-magic-stick"></i>
             <span class="home-menu-title">创作</span>
           </el-menu-item>
-          <el-sub-menu index="/admin/article">
+          <el-sub-menu index="/user/manger">
             <template #title>
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               <i class="el-icon-reading"></i>
               <span class="home-menu-title">管理</span>
             </template>
-            <el-menu-item index="/admin/article">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;作品管理</el-menu-item>
-            <el-menu-item index="/admin/comment">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;评论管理</el-menu-item>
+            <el-menu-item index="/user/manger/article"
+              >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;作品管理</el-menu-item
+            >
+            <el-menu-item index="/user/manger/comment"
+              >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;评论管理</el-menu-item
+            >
           </el-sub-menu>
 
-          <el-sub-menu index="/admin/data">
+          <el-sub-menu index="/user/data">
             <template #title>
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               <i class="el-icon-reading"></i>
               <span class="home-menu-title">数据</span>
             </template>
-            <el-menu-item index="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;作品数据</el-menu-item>
-            <el-menu-item index="/admin/fans">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;粉丝数据</el-menu-item>
+            <el-menu-item index="/user/data/article"
+              >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;作品数据</el-menu-item
+            >
+            <el-menu-item index="/user/data/fans"
+              >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;粉丝数据</el-menu-item
+            >
           </el-sub-menu>
 
-          <el-sub-menu index="/admin/user">
-            <template #title>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              <i class="el-icon-user-solid"></i>
-              <span class="home-menu-title">设置</span>
-            </template>
-            <el-menu-item index="/admin/user/personal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;个人资料</el-menu-item>
-            <el-menu-item index="/admin/user/password">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;修改密码</el-menu-item>
-          </el-sub-menu>
+          <el-menu-item index="/user/setup">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <i class="el-icon-magic-stick"></i>
+            <span class="home-menu-title">设置</span>
+          </el-menu-item>
         </el-menu>
       </el-aside>
       <el-main>
@@ -67,9 +71,9 @@
     </el-container>
   </el-container>
 </template>
-
-
-<script>
+  
+  
+  <script>
 import { getCurrentInstance, ref } from "vue";
 export default {
   setup() {
@@ -108,10 +112,10 @@ export default {
   },
 };
 </script>
-
-
-
-<style scoped lang="less">
+  
+  
+  
+  <style scoped lang="less">
 .el-container {
   height: 100%;
 }
@@ -122,7 +126,7 @@ export default {
   .sys-title {
     float: left;
     margin-left: 20px;
-    color:#FF5E5E;
+    color: #ff5e5e;
     font-size: 30px;
     font-weight: 700;
   }
@@ -142,10 +146,10 @@ export default {
   }
 }
 .el-main {
-  background-color: #F8F8F8;
-  .home-main{
+  background-color: #f8f8f8;
+  .home-main {
     height: 100%;
-    background-color: #FFFFFF;
+    background-color: #ffffff;
   }
 }
 
@@ -153,3 +157,4 @@ export default {
 //   text-align: center;
 // }
 </style>
+  
