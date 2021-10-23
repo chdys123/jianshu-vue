@@ -44,8 +44,8 @@
       <div class="con-right">
         <div class="label-item">
           <span class="label">联系邮箱</span>
-          <span class="content">{{form.data.email}}</span>
-          <span class="func" @click="showEmail=true">填写邮箱</span>
+          <span class="content">{{ form.data.email }}</span>
+          <span class="func" @click="showEmail = true">填写邮箱</span>
         </div>
       </div>
     </div>
@@ -56,7 +56,7 @@
         <div class="label-item">
           <span class="label">登录密码</span>
           <span class="content"></span>
-          <span class="func" @click="showPwd=true">修改</span>
+          <span class="func" @click="showPwd = true">修改</span>
         </div>
       </div>
     </div>
@@ -85,9 +85,9 @@
     </template>
   </el-dialog>
 
-<!-- 用户简介 -->
+  <!-- 用户简介 -->
 
-<el-dialog
+  <el-dialog
     v-model="showDesc"
     title="编辑用户简介"
     width="30%"
@@ -131,13 +131,8 @@
     </template>
   </el-dialog>
 
-
   <!-- 用户密码 -->
-  <el-dialog
-    v-model="showPwd"
-    title="修改密码"
-    width="30%"
-  >
+  <el-dialog v-model="showPwd" title="修改密码" width="30%">
     <el-input
       v-model="pwd"
       maxlength="10"
@@ -147,18 +142,11 @@
     ></el-input>
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="showPwd=false">取消</el-button>
+        <el-button @click="showPwd = false">取消</el-button>
         <el-button type="danger" @click="updatePwd()">修改</el-button>
       </span>
     </template>
   </el-dialog>
-
-
-
-
-
-
-
 </template>
 
 
@@ -207,7 +195,10 @@ export default {
           console.log(res);
           if (res.code == 200) {
             proxy.$message.success("个人信息修改成功");
-            proxy.$store.commit("updateUser", JSON.parse(JSON.stringify(toRaw(form.data))));
+            proxy.$store.commit(
+              "updateUser",
+              JSON.parse(JSON.stringify(toRaw(form.data)))
+            );
             localStorage.setItem("user", JSON.stringify(res.user));
           } else if (res.code == 300) {
             proxy.$message.error("个人信息修改失败");
@@ -240,9 +231,9 @@ export default {
     }
     let showUsername = ref(false);
     let showDesc = ref(false);
-    let showEmail=ref(false)
-    let showPwd=ref(false)
-    let pwd=ref("")
+    let showEmail = ref(false);
+    let showPwd = ref(false);
+    let pwd = ref("");
 
     // 取消
     function Quxiao(str) {
@@ -255,31 +246,30 @@ export default {
       update();
     }
     // 修改密码
-    function updatePwd(){
-        console.log("修改成功")
+    function updatePwd() {
+      console.log("修改成功");
 
-        proxy.http({
-            method:"post",
-            path:"/update/pwd",
-            params:{
-                _id:form.data._id,
-                pwd:pwd.value
-            }
-        }).then(res=>{
-            console.log(res)
-            if(res.code==200){
-                proxy.$message.success("修改密码成功")
-            }else if(res.code==300){
-                proxy.$message.error("修改密码失败")
-            }else{
-                proxy.$message.error("修改密码时出现异常")
-            }
+      proxy
+        .http({
+          method: "post",
+          path: "/update/pwd",
+          params: {
+            _id: form.data._id,
+            pwd: pwd.value,
+          },
         })
-        showPwd.value=false
-
-
+        .then((res) => {
+          console.log(res);
+          if (res.code == 200) {
+            proxy.$message.success("修改密码成功");
+          } else if (res.code == 300) {
+            proxy.$message.error("修改密码失败");
+          } else {
+            proxy.$message.error("修改密码时出现异常");
+          }
+        });
+      showPwd.value = false;
     }
-
 
     return {
       uploaderHeader,
@@ -296,13 +286,14 @@ export default {
       showDesc,
       showEmail,
       showPwd,
-      pwd
+      pwd,
     };
   },
   // 每次进入组件的时候 重新请求
   created() {
     this.getData();
   },
+ 
 };
 </script>
 

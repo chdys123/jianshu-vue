@@ -12,11 +12,12 @@
     <el-container>
       <el-aside width="250px">
         <el-menu
-        default-active="/user/mainPage"
+        :default-active="activeIndex"
           background-color="#F8F8F8"
           text-color="#222222"
           active-text-color="#FF5E5E"
           router
+          
         >
           <el-menu-item index="/user/mainPage">
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -87,10 +88,13 @@ export default {
       // 跳转到登录页面
       proxy.$router.push("/login");
     };
+
+    let activeIndex=ref(proxy.$route.path)
     return {
       quit,
       userImg,
       username,
+      activeIndex
     };
   },
   components: {
@@ -110,6 +114,7 @@ export default {
       }
     });
   },
+
 };
 </script>
   
@@ -143,6 +148,9 @@ export default {
   background-color: #f8f8f8;
   .home-menu-title {
     font-size: 18px;
+  }
+  .el-menu{
+    width: 250px;
   }
 }
 .el-main {

@@ -13,50 +13,60 @@ const routes=[
     {
         path:"/user",
         name:"user",
-        component:()=>import("../views/user/index.vue"),
+        component:()=>import("../views/user/index1.vue"),
         children:[
-            // 主页
+            // 路由组件
             {
-                path:"mainPage",
-                name:"mainPage",
-                component:()=>import("../views/user/mainPage/index.vue")
+                path:"menu",
+                name:"menu",
+                component:()=>import("../views/user/menu.vue"),
+                children:[
+                    {
+                        path:"mainPage",
+                        name:"mainPage",
+                        component:()=>import("../views/user/mainPage/index.vue")
+                    },
+                  
+                    // 作品管理
+                    {
+                        path:"manger/article",
+                        name:"mangerArticle",
+                        component:()=>import("../views/user/manger/article.vue")
+                    },
+                    // 评论管理
+                    {
+                        path:"manger/comment",
+                        name:"mangerComment",
+                        component:()=>import("../views/user/manger/comment.vue")
+                    },
+                    // 作品数据
+                    {
+                        path:"data/article",
+                        name:"dataArticle",
+                        component:()=>import("../views/user/data/article.vue")
+                    },
+                    // 粉丝数据
+                    {
+                        path:"data/fans",
+                        name:"dataFans",
+                        component:()=>import("../views/user/data/fans.vue")
+                    },
+                    // 设置
+                    {
+                        path:"setup",
+                        name:"setup",
+                        component:()=>import("../views/user/setup/index.vue")
+                    },
+                ]
+                
             },
-            // 创作
-            {
+              // 创作
+              {
                 path:"create",
                 name:"create",
                 component:()=>import("../views/user/create/index.vue")
             },
-            // 作品管理
-            {
-                path:"manger/article",
-                name:"mangerArticle",
-                component:()=>import("../views/user/manger/article.vue")
-            },
-            // 评论管理
-            {
-                path:"manger/comment",
-                name:"mangerComment",
-                component:()=>import("../views/user/manger/comment.vue")
-            },
-            // 作品数据
-            {
-                path:"data/article",
-                name:"dataArticle",
-                component:()=>import("../views/user/data/article.vue")
-            },
-            // 粉丝数据
-            {
-                path:"data/fans",
-                name:"dataFans",
-                component:()=>import("../views/user/data/fans.vue")
-            },
-            // 设置
-            {
-                path:"setup",
-                name:"setup",
-                component:()=>import("../views/user/setup/index.vue")
-            },
+            
             
         ]
     },

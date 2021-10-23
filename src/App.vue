@@ -21,6 +21,7 @@ export default {
 html,
 body {
   height: 100%;
+  background-color: #F8F8F8;
 }
 #app {
   height: 100%;
