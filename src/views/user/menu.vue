@@ -48,19 +48,28 @@
       </el-menu>
     </div>
     <div class="menu-right">
-        <router-view></router-view>
+      <div class="menu-right-con">
+        <el-scrollbar>
+          <router-view></router-view>
+        </el-scrollbar>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { ref, reactive } from "vue";
+import { ref, reactive, getCurrentInstance } from "vue";
 export default {
   setup() {
+    const { proxy } = getCurrentInstance();
+    // 是否折叠
     let isCollapse = ref(false);
+    // 当前路由
+    let activeIndex = ref(proxy.$route.path);
 
     return {
       isCollapse,
+      activeIndex,
     };
   },
 };
@@ -71,16 +80,26 @@ export default {
   // background-color: pink;
   height: calc(100vh - 66px);
   display: flex;
-  .menu-left{
-      width: 250px;
+  .menu-left {
+    width: 250px;
     //   background-color: pink;
-      height: 100%;
+    height: 100%;
+    .el-menu {
+      border-right: 0;
+    }
   }
-  .menu-right{
-      flex:1;
+  .menu-right {
+    flex: 1;
+    height: 100%;
+    box-sizing: border-box;
+    background-color: #f8f8f8;
+    padding: 20px 40px 20px 0px;
+    // background-color: pink;
+    .menu-right-con {
+      width: 100%;
       height: 100%;
-      background-color: pink;
+      background-color: #ffffff;
+    }
   }
-
 }
 </style>

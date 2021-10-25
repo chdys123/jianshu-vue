@@ -4,7 +4,7 @@
       <div class="sys-title">简书</div>
       <div class="header-right">
         <a>网站首页</a>
-        <img :src="$store.state.user.avatar" alt="" class="header-userImg" />
+        <img :src="$store.state.user.avatar" class="header-userImg" />
         <span>{{ $store.state.user.username }}</span>
         <el-button type="primary" @click="quit">退出</el-button>
       </div>

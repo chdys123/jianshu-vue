@@ -301,7 +301,7 @@ export default {
 .setup-con {
   width: 100%;
   height: 100%;
-  //   background-color: pink;
+    background-color: #FFFFFF;
 
   .con-left {
     float: left;

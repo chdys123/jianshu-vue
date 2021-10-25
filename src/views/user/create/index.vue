@@ -24,9 +24,13 @@
                 name="myfile"
                 :on-success="handleAvatarSuccess1"
                 :before-upload="beforeAvatarUpload"
-                v-show="coverType=='单图'||coverType=='三图'"
+                v-show="coverType == '单图' || coverType == '三图'"
               >
-                <img v-if="article.coverImg[0]" :src="article.coverImg[0]" class="avatar" />
+                <img
+                  v-if="article.coverImg[0]"
+                  :src="article.coverImg[0]"
+                  class="avatar"
+                />
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               </el-upload>
 
@@ -38,9 +42,13 @@
                 name="myfile"
                 :on-success="handleAvatarSuccess2"
                 :before-upload="beforeAvatarUpload"
-                v-show="coverType=='三图'"
+                v-show="coverType == '三图'"
               >
-                <img v-if="article.coverImg[1]" :src="article.coverImg[1]" class="avatar" />
+                <img
+                  v-if="article.coverImg[1]"
+                  :src="article.coverImg[1]"
+                  class="avatar"
+                />
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               </el-upload>
 
@@ -52,15 +60,19 @@
                 name="myfile"
                 :on-success="handleAvatarSuccess3"
                 :before-upload="beforeAvatarUpload"
-                v-show="coverType=='三图'"
+                v-show="coverType == '三图'"
               >
-                <img v-if="article.coverImg[2]" :src="article.coverImg[2]" class="avatar" />
+                <img
+                  v-if="article.coverImg[2]"
+                  :src="article.coverImg[2]"
+                  class="avatar"
+                />
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               </el-upload>
             </div>
 
-            <div class="create-upload-tip" v-show="coverType!='无封面'">
-                优质的封面有利于推荐，格式支持JPEG、PNG
+            <div class="create-upload-tip" v-show="coverType != '无封面'">
+              优质的封面有利于推荐，格式支持JPEG、PNG
             </div>
           </div>
         </div>
@@ -68,7 +80,7 @@
     </div>
     <div class="create-con3">
       <div class="footer">
-        <el-button type="danger">发布</el-button>
+        <el-button type="danger" @click="submit">发布</el-button>
       </div>
     </div>
   </div>
@@ -81,15 +93,23 @@ import { ref, reactive, getCurrentInstance } from "vue";
 export default {
   setup() {
     let { proxy } = getCurrentInstance();
-    let form = reactive({
+    // 富文本对象
+    let editor = reactive({ data: {} });
+    // 编写的文章 包括标题 正文 封面图片
+    let article = reactive({
       title: "",
+      id: "",
+      createTime: "",
       content: "",
-      stemfrom: "原创",
-      // 感觉后期还是改成 作者id比较好
+      coverType: "",
+      coverImg: [],
+      author: "",
       authorId: "",
     });
-    let editor = reactive({ data: {} });
     const submit = function () {
+      // 先判断标题和正文 和封面舒服正确填写
+
+
       // 获取富文本内容
       let content = editor.data.txt.html();
       let date = new Date();
@@ -99,19 +119,22 @@ export default {
           path: "/article/add",
           params: {
             id: Date.now(),
-            title: form.title,
+            title: article.title,
             createTime: `${date.getFullYear()}-${
               date.getMonth() + 1
             }-${date.getDate()}:${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`,
-            stemfrom: form.stemfrom,
             content: content,
             author: proxy.$store.state.user.username,
             authorId: proxy.$store.state.user._id,
+            coverType: article.coverType,
+            coverImg: article.coverImg,
           },
         })
         .then((res) => {
           if (res.code == 200) {
             proxy.$message.success("文章发布成功");
+            // 然后跳转到文章管理页面
+            proxy.$router.push("/user/menu/manger/article")
           } else if (res.code == 300) {
             proxy.$message.error("文章发布失败");
           } else {
@@ -127,44 +150,32 @@ export default {
       authorization: "Bearer " + localStorage.getItem("token"),
     });
 
-    // 编写的文章 包括标题 正文 封面图片
-    let article=reactive({
-        title:"",
-        content:"",
-        coverType:"",
-        coverImg:[],
-        author:'',
-    })
-
     // 封面上传成功的回调
-    function handleAvatarSuccess1(res, file, fileList){
-        article.coverImg[0]= res.data;
+    function handleAvatarSuccess1(res, file, fileList) {
+      article.coverImg[0] = res.data;
     }
-    function handleAvatarSuccess2(res, file, fileList){
-        article.coverImg[1]= res.data;
+    function handleAvatarSuccess2(res, file, fileList) {
+      article.coverImg[1] = res.data;
     }
-    function handleAvatarSuccess3(res, file, fileList){
-        article.coverImg[2]= res.data;
+    function handleAvatarSuccess3(res, file, fileList) {
+      article.coverImg[2] = res.data;
     }
     // 封面上传前的回调 检测格式
-    function beforeAvatarUpload(file){
-        
-        const isJPG = file.type === 'image/jpeg'||file.type === 'image/png'
-
-        const isLt2M = file.size / 1024 / 1024 < 2
-        if (!isJPG) {
-          proxy.$message.error('封面图片只能是 JPEG或者PNG 格式!')
-        }
-
-        if (!isLt2M) {
-          proxy.$message.error('封面图片大小不能超过 2MB!')
-        }
-        return isJPG && isLt2M
+    function beforeAvatarUpload(file) {
+      const isJPG = file.type === "image/jpeg" || file.type === "image/png";
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      if (!isJPG) {
+        proxy.$message.error("封面图片只能是 JPEG或者PNG 格式!");
+      }
+      if (!isLt2M) {
+        proxy.$message.error("封面图片大小不能超过 2MB!");
+      }
+      return isJPG && isLt2M;
     }
 
+  
 
     return {
-      form,
       editor,
       submit,
       coverType,
@@ -173,7 +184,7 @@ export default {
       handleAvatarSuccess1,
       handleAvatarSuccess2,
       handleAvatarSuccess3,
-      beforeAvatarUpload
+      beforeAvatarUpload,
     };
   },
   mounted() {
@@ -188,8 +199,7 @@ export default {
     this.editor.data.config.uploadImgHeaders = {
       authorization: "Bearer " + localStorage.token,
     };
-    // 设置富文本编辑器高度
-    // this.editor.data.config.height = window.innerHeight - 400;
+    // 设置富文本的显示层级
     this.editor.data.config.zIndex = 1;
     // 设置提示文字
     this.editor.data.config.placeholder = "请输入正文";
@@ -281,10 +291,10 @@ export default {
               height: 150px;
               overflow: hidden;
               margin-right: 10px;
-              background-color: #FAFAFA;
+              background-color: #fafafa;
             }
             .avatar-uploader .el-upload:hover {
-              border-color: #FF5E5E;
+              border-color: #ff5e5e;
             }
             .avatar-uploader-icon {
               font-size: 28px;
@@ -296,13 +306,13 @@ export default {
             }
             .avatar {
               width: 150px;
-            //   height: 150px;
+              //   height: 150px;
               display: block;
             }
           }
-          .create-upload-tip{
-              font-size: 12px;
-              color:#999999;
+          .create-upload-tip {
+            font-size: 12px;
+            color: #999999;
           }
         }
       }
