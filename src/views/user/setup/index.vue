@@ -24,7 +24,7 @@
               :show-file-list="false"
             >
               <span class="avatar">上传头像</span>
-              <img :src="form.data.avatar"/>
+              <img :src="form.data.avatar" />
               <span v-show="form.data.avatar" class="avatar-span"
                 >更换头像</span
               >
@@ -293,15 +293,14 @@ export default {
   created() {
     this.getData();
   },
- 
 };
 </script>
 
 <style lang="less" scoped>
 .setup-con {
-  width: 100%;
+  min-width: 500px;
   height: 100%;
-    background-color: #FFFFFF;
+  background-color: #ffffff;
 
   .con-left {
     float: left;
@@ -395,6 +394,7 @@ export default {
   }
   .clear-float {
     clear: both;
+    overflow: hidden;
   }
 }
 </style>

@@ -6,15 +6,26 @@
     <div class="create-con2">
       <div class="create-con21">
         <div class="create-article-title">
-          <input type="text" placeholder="请输入文章标题" />
+          <div
+            contenteditable="true"
+            class="textarea"
+            placeholder="请输入文章标题(5~30个字)"
+            v-text="article.title"
+            @input="input($event)"
+          ></div>
+          <span
+            class="create-t-t"
+            :class="article.title.length > 30 ? 'over30' : ''"
+            >{{ article.title.length }}/30</span
+          >
         </div>
         <div id="text-container"></div>
         <div class="create-footer">
           <div class="create-f-label">展示封面</div>
           <div class="create-f-item">
-            <el-radio v-model="coverType" label="单图"></el-radio>
-            <el-radio v-model="coverType" label="三图"></el-radio>
-            <el-radio v-model="coverType" label="无封面"></el-radio>
+            <el-radio v-model="article.coverType" label="单图"></el-radio>
+            <el-radio v-model="article.coverType" label="三图"></el-radio>
+            <el-radio v-model="article.coverType" label="无封面"></el-radio>
             <div class="create-upload">
               <el-upload
                 class="avatar-uploader"
@@ -24,7 +35,9 @@
                 name="myfile"
                 :on-success="handleAvatarSuccess1"
                 :before-upload="beforeAvatarUpload"
-                v-show="coverType == '单图' || coverType == '三图'"
+                v-show="
+                  article.coverType == '单图' || article.coverType == '三图'
+                "
               >
                 <img
                   v-if="article.coverImg[0]"
@@ -42,7 +55,7 @@
                 name="myfile"
                 :on-success="handleAvatarSuccess2"
                 :before-upload="beforeAvatarUpload"
-                v-show="coverType == '三图'"
+                v-show="article.coverType == '三图'"
               >
                 <img
                   v-if="article.coverImg[1]"
@@ -60,7 +73,7 @@
                 name="myfile"
                 :on-success="handleAvatarSuccess3"
                 :before-upload="beforeAvatarUpload"
-                v-show="coverType == '三图'"
+                v-show="article.coverType == '三图'"
               >
                 <img
                   v-if="article.coverImg[2]"
@@ -71,7 +84,10 @@
               </el-upload>
             </div>
 
-            <div class="create-upload-tip" v-show="coverType != '无封面'">
+            <div
+              class="create-upload-tip"
+              v-show="article.coverType != '无封面'"
+            >
               优质的封面有利于推荐，格式支持JPEG、PNG
             </div>
           </div>
@@ -80,6 +96,10 @@
     </div>
     <div class="create-con3">
       <div class="footer">
+        <div class="footer-cg-con">
+          <i class="el-icon-circle-check"></i>
+          <span>{{ cgTips }}</span>
+        </div>
         <el-button type="danger" @click="submit">发布</el-button>
       </div>
     </div>
@@ -89,62 +109,94 @@
   
 <script>
 import Editor from "wangeditor";
-import { ref, reactive, getCurrentInstance } from "vue";
+import { ref, reactive, getCurrentInstance, watchEffect, watch } from "vue";
+import { useStore } from "vuex";
 export default {
   setup() {
     let { proxy } = getCurrentInstance();
+    const store = useStore();
     // 富文本对象
     let editor = reactive({ data: {} });
     // 编写的文章 包括标题 正文 封面图片
     let article = reactive({
       title: "",
-      id: "",
       createTime: "",
       content: "",
-      coverType: "",
-      coverImg: [],
-      author: "",
-      authorId: "",
+      coverType: "单图",
+      coverImg: ["", "", ""],
+      author: store.state.user.username,
+      authorId: store.state.user._id,
     });
-    const submit = function () {
-      // 先判断标题和正文 和封面舒服正确填写
+    // 发布文章
+    const submit = async () => {
+      // 先判断标题和正文 和封面是否正确填写
+      if (article.title.length < 5 || article.title.length > 30) {
+        proxy.$message.error("请正确填写文章标题");
+        return;
+      }
+      if (article.content.trim().length == 0) {
+        proxy.$message.error("正文不能为空");
+        return;
+      }
+      if (article.coverType == "单图") {
+        if (article.coverImg[0] == "") {
+          proxy.$message.error("请上传文章封面图片");
+          return;
+        }
+      } else if (article.coverType == "三图") {
+        try {
+          article.coverImg.forEach((item) => {
+            if (item == "") {
+              proxy.$message.error("请正确上传封面图片张数");
+              throw new Error("break");
+            }
+          });
+        } catch (err) {
+          return;
+        }
+      }
 
-
-      // 获取富文本内容
-      let content = editor.data.txt.html();
       let date = new Date();
       proxy
         .http({
           method: "post",
           path: "/article/add",
           params: {
-            id: Date.now(),
             title: article.title,
-            createTime: `${date.getFullYear()}-${
-              date.getMonth() + 1
-            }-${date.getDate()}:${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`,
-            content: content,
+            createTime: Date.now(),
+            content: article.content,
             author: proxy.$store.state.user.username,
             authorId: proxy.$store.state.user._id,
             coverType: article.coverType,
             coverImg: article.coverImg,
+            statu: "审核中",
           },
         })
         .then((res) => {
           if (res.code == 200) {
-            proxy.$message.success("文章发布成功");
-            // 然后跳转到文章管理页面
-            proxy.$router.push("/user/menu/manger/article")
+            proxy.$message.success("提交成功");
+            // 提交成功之后需要删除草稿
+            proxy
+              .http({
+                method: "post",
+                path: "/draft/del",
+                params: { _id: draftId.value },
+              })
+              .then((res) => {
+                if (res.code == 200) {
+                  // 然后跳转到文章管理页面
+                  proxy.$router.push("/user/menu/manger/article");
+                }
+              });
           } else if (res.code == 300) {
-            proxy.$message.error("文章发布失败");
+            proxy.$message.error("提交失败");
           } else {
-            proxy.$message.error("文章发布时出现异常");
+            proxy.$message.error("文章提交时出现异常");
           }
         });
     };
 
     // 单选框 选择封面类型
-    let coverType = ref("单图");
     // 封面图片上传请求头
     let uploaderHeader = reactive({
       authorization: "Bearer " + localStorage.getItem("token"),
@@ -173,18 +225,96 @@ export default {
       return isJPG && isLt2M;
     }
 
-  
+    // div输入的时候
+    function input(e) {
+      article.title = e.target.innerText;
+    }
+
+    // 监听文章改变用来保存草稿
+    let timer = null;
+    watch(article, (newData, oldData) => {
+      if (timer) {
+        clearTimeout(timer);
+      }
+      timer = setTimeout(() => {
+        // 执行保存草稿的操作
+        cgTips.value = "草稿保存中...";
+        if (draftId.value == "") {
+          proxy
+            .http({
+              method: "post",
+              path: "/draft/add",
+              params: {
+                title: article.title,
+                createTime: Date.now(),
+                content: article.content,
+                author: article.author,
+                authorId: article.authorId,
+                coverType: article.coverType,
+                coverImg: article.coverImg,
+              },
+            })
+            .then((res) => {
+              if (res.code == 200) {
+                cgTips.value = "草稿已保存";
+                draftId.value = res.res._id;
+              } else if (res.code == 300) {
+                cgTips.value = "草稿保存失败";
+              } else {
+                cgTips.value = "草稿保存出现异常";
+              }
+            });
+        } else {
+          proxy
+            .http({
+              method: "post",
+              path: "/draft/update",
+              params: {
+                _id: draftId.value,
+                data: {
+                  title: article.title,
+                  createTime: Date.now(),
+                  content: article.content,
+                  author: article.author,
+                  authorId: article.authorId,
+                  coverType: article.coverType,
+                  coverImg: article.coverImg,
+                },
+              },
+            })
+            .then((res) => {
+              if (res.code == 200) {
+                cgTips.value = "草稿已保存";
+              } else if (res.code == 300) {
+                cgTips.value = "草稿保存失败";
+              } else {
+                cgTips.value = "草稿修改出现异常";
+              }
+            });
+        }
+      }, 1000);
+    });
+    // 保存草稿的函数
+    const keepCg = () => {};
+
+    // 下方保存草稿提示语
+    let cgTips = ref("草稿将自动保存");
+
+    // 草稿的_id
+    let draftId = ref("");
 
     return {
       editor,
       submit,
-      coverType,
       uploaderHeader,
       article,
       handleAvatarSuccess1,
       handleAvatarSuccess2,
       handleAvatarSuccess3,
       beforeAvatarUpload,
+      input,
+      cgTips,
+      draftId,
     };
   },
   mounted() {
@@ -199,6 +329,13 @@ export default {
     this.editor.data.config.uploadImgHeaders = {
       authorization: "Bearer " + localStorage.token,
     };
+
+    // // 内容改变
+    this.editor.data.config.onchange = (newHtml) => {
+      this.article.content = newHtml;
+    };
+    this.editor.data.config.onchangeTimeout = 500;
+
     // 设置富文本的显示层级
     this.editor.data.config.zIndex = 1;
     // 设置提示文字
@@ -240,15 +377,39 @@ export default {
       background-color: #ffffff;
       .create-article-title {
         width: 100%;
-        height: 60px;
         border-bottom: 1px solid #e8e8e8;
-        input {
-          height: 58px;
-          width: 100%;
+        box-sizing: border-box;
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        .textarea {
+          min-height: 40px;
+          // background-color: yellow;
+          width: calc(100% - 40px);
           font-size: 24px;
+          line-height: 40px;
           font-weight: 700;
           outline: none;
           border: 0;
+          resize: none;
+          &[contenteditable]:empty:before {
+            content: attr(placeholder);
+            color: #999999;
+          }
+          &[contenteditable]:focus {
+            content: none;
+          }
+        }
+
+        .create-t-t {
+          // background-color: pink;
+          font-size: 12px;
+          width: 40px;
+          line-height: 40px;
+          color: #999999;
+        }
+        .over30 {
+          color: red;
         }
       }
       #text-container {
@@ -336,7 +497,12 @@ export default {
       padding: 10px;
       display: flex;
       align-items: center;
-      justify-content: flex-end;
+      justify-content: space-between;
+      .footer-cg-con {
+        cursor: default;
+        font-size: 12px;
+        color: #666666;
+      }
     }
   }
 }

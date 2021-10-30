@@ -13,9 +13,9 @@
           <i class="el-icon-magic-stick"></i>
           <span class="home-menu-title">主页</span>
         </el-menu-item>
-        <el-menu-item index="/user/create">
+        <el-menu-item  index="/user/create" >
           <i class="el-icon-magic-stick"></i>
-          <span class="home-menu-title">创作</span>
+          <span class="home-menu-title" >创作</span>
         </el-menu-item>
         <el-sub-menu index="/user/menu/manger">
           <template #title>
@@ -67,9 +67,17 @@ export default {
     // 当前路由
     let activeIndex = ref(proxy.$route.path);
 
+    const toCreate = () => {
+      let routeUrl = proxy.$router.resolve({
+        path: "/user/create",
+      });
+      window.open(routeUrl.href, "_blank");
+    };
+
     return {
       isCollapse,
       activeIndex,
+      toCreate,
     };
   },
 };
@@ -81,11 +89,14 @@ export default {
   height: calc(100vh - 66px);
   display: flex;
   .menu-left {
-    width: 250px;
+    width: 200px;
     //   background-color: pink;
     height: 100%;
     .el-menu {
       border-right: 0;
+      .home-menu-title {
+        font-size: 18px;
+      }
     }
   }
   .menu-right {
@@ -93,12 +104,13 @@ export default {
     height: 100%;
     box-sizing: border-box;
     background-color: #f8f8f8;
-    padding: 20px 40px 20px 0px;
+    padding: 20px 40px 20px 10px;
     // background-color: pink;
     .menu-right-con {
       width: 100%;
       height: 100%;
       background-color: #ffffff;
+      // background-color: pink;
     }
   }
 }

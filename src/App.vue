@@ -1,6 +1,5 @@
 <template>
   <router-view></router-view>
-
 </template>
 
 <script>
@@ -11,9 +10,11 @@ export default {
     console.log("启动了");
   },
 };
-</script>
+</script >
 
 <style>
+
+
 * {
   margin: 0;
   padding: 0;
@@ -26,4 +27,6 @@ body {
 #app {
   height: 100%;
 }
+
+
 </style>

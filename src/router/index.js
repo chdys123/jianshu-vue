@@ -31,7 +31,7 @@ const routes=[
                     {
                         path:"manger/article",
                         name:"mangerArticle",
-                        component:()=>import("../views/user/manger/article.vue")
+                        component:()=>import("../views/user/manger/article.vue"),
                     },
                     // 评论管理
                     {
