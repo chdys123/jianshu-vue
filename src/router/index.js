@@ -5,7 +5,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 const routes=[
     // 文章展示页面
     {
-        path:"/",
+        path:"",
         name:"Web",
         component:()=>import("../views/Web/index.vue")
     },

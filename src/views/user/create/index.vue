@@ -119,6 +119,7 @@ export default {
     let editor = reactive({ data: {} });
     // 编写的文章 包括标题 正文 封面图片
     let article = reactive({
+      id: "",
       title: "",
       createTime: "",
       content: "",
@@ -157,11 +158,19 @@ export default {
       }
 
       let date = new Date();
+      // 判断是修改还是发布
+      let path = "";
+      if (articleId.value == "") {
+        path = "/article/add";
+      } else {
+        path = "article/update";
+      }
       proxy
         .http({
           method: "post",
-          path: "/article/add",
+          path: path,
           params: {
+            id:articleId.value,
             title: article.title,
             createTime: Date.now(),
             content: article.content,
@@ -176,7 +185,8 @@ export default {
           if (res.code == 200) {
             proxy.$message.success("提交成功");
             // 提交成功之后需要删除草稿
-            proxy
+            if(articleId.value==''){
+              proxy
               .http({
                 method: "post",
                 path: "/draft/del",
@@ -188,6 +198,9 @@ export default {
                   proxy.$router.push("/user/menu/manger/article");
                 }
               });
+            }else{
+              proxy.$router.push("/user/menu/manger/article");
+            }
           } else if (res.code == 300) {
             proxy.$message.error("提交失败");
           } else {
@@ -233,66 +246,68 @@ export default {
     // 监听文章改变用来保存草稿
     let timer = null;
     watch(article, (newData, oldData) => {
-      if (timer) {
-        clearTimeout(timer);
-      }
-      timer = setTimeout(() => {
-        // 执行保存草稿的操作
-        cgTips.value = "草稿保存中...";
-        if (draftId.value == "") {
-          proxy
-            .http({
-              method: "post",
-              path: "/draft/add",
-              params: {
-                title: article.title,
-                createTime: Date.now(),
-                content: article.content,
-                author: article.author,
-                authorId: article.authorId,
-                coverType: article.coverType,
-                coverImg: article.coverImg,
-              },
-            })
-            .then((res) => {
-              if (res.code == 200) {
-                cgTips.value = "草稿已保存";
-                draftId.value = res.res._id;
-              } else if (res.code == 300) {
-                cgTips.value = "草稿保存失败";
-              } else {
-                cgTips.value = "草稿保存出现异常";
-              }
-            });
-        } else {
-          proxy
-            .http({
-              method: "post",
-              path: "/draft/update",
-              params: {
-                _id: draftId.value,
-                data: {
+      if (articleId.value == "") {
+        if (timer) {
+          clearTimeout(timer);
+        }
+        timer = setTimeout(() => {
+          // 执行保存草稿的操作
+          cgTips.value = "草稿保存中...";
+          if (draftId.value == "") {
+            proxy
+              .http({
+                method: "post",
+                path: "/draft/add",
+                params: {
                   title: article.title,
                   createTime: Date.now(),
                   content: article.content,
-                  author: article.author,
-                  authorId: article.authorId,
+                  author: JSON.parse(localStorage.user).username,
+                  authorId: JSON.parse(localStorage.user)._id,
                   coverType: article.coverType,
                   coverImg: article.coverImg,
                 },
-              },
-            })
-            .then((res) => {
-              if (res.code == 200) {
-                cgTips.value = "草稿已保存";
-              } else if (res.code == 300) {
-                cgTips.value = "草稿保存失败";
-              } else {
-                cgTips.value = "草稿修改出现异常";
-              }
-            });
-        }
-      }, 1000);
+              })
+              .then((res) => {
+                if (res.code == 200) {
+                  cgTips.value = "草稿已保存";
+                  draftId.value = res.res._id;
+                } else if (res.code == 300) {
+                  cgTips.value = "草稿保存失败";
+                } else {
+                  cgTips.value = "草稿保存出现异常";
+                }
+              });
+          } else {
+            proxy
+              .http({
+                method: "post",
+                path: "/draft/update",
+                params: {
+                  _id: draftId.value,
+                  data: {
+                    title: article.title,
+                    createTime: Date.now(),
+                    content: article.content,
+                    author: JSON.parse(localStorage.user).username,
+                    authorId: JSON.parse(localStorage.user)._id,
+                    coverType: article.coverType,
+                    coverImg: article.coverImg,
+                  },
+                },
+              })
+              .then((res) => {
+                if (res.code == 200) {
+                  cgTips.value = "草稿已保存";
+                } else if (res.code == 300) {
+                  cgTips.value = "草稿保存失败";
+                } else {
+                  cgTips.value = "草稿修改出现异常";
+                }
+              });
+          }
+        }, 1000);
+      }
     });
     // 保存草稿的函数
     const keepCg = () => {};
@@ -302,6 +317,9 @@ export default {
 
     // 草稿的_id
     let draftId = ref("");
+
+    // 文章的Id
+    let articleId = ref("");
 
     return {
       editor,
@@ -315,32 +333,72 @@ export default {
       input,
       cgTips,
       draftId,
+      articleId,
     };
   },
+
   mounted() {
-    // 创建wangeditor实例
-    this.editor.data = new Editor("#toolbar-container", "#text-container");
-    // 配置上传图片接口地址
-    this.editor.data.config.uploadImgServer =
-      "http://localhost:3000/upload/editor/img";
-    // 图片字段名
-    this.editor.data.config.uploadFileName = "editorFile";
-    // 图片请求头
-    this.editor.data.config.uploadImgHeaders = {
-      authorization: "Bearer " + localStorage.token,
-    };
+    // 获取草稿或者文章的函数
+    const getData = async () => {
+      // 获取草稿id
+      let dId = this.$route.query.draftId;
+      // 获取已经发布文章id
+      let aId = this.$route.query.articleId;
+      let res = null;
+      if (dId) {
+        this.draftId = dId;
+        res = await this.http({
+          method: "get",
+          path: "/draft/findOne",
+          params: {
+            id: dId,
+          },
+        });
+      }
+      if (aId) {
+        this.articleId = aId;
+        res = await this.http({
+          method: "get",
+          path: "article/findOne",
+          params: {
+            id: aId,
+          },
+        });
+      }
 
-    // // 内容改变
-    this.editor.data.config.onchange = (newHtml) => {
-      this.article.content = newHtml;
-    };
-    this.editor.data.config.onchangeTimeout = 500;
+      if (aId || dId) {
+        this.article.title = res.data.title;
+        this.article.content = res.data.content;
+        this.article.coverType = res.data.coverType;
+        this.article.coverImg = res.data.coverImg;
+      }
 
-    // 设置富文本的显示层级
-    this.editor.data.config.zIndex = 1;
-    // 设置提示文字
-    this.editor.data.config.placeholder = "请输入正文";
-    this.editor.data.create();
+      // 创建wangeditor实例
+      this.editor.data = new Editor("#toolbar-container", "#text-container");
+      // 配置上传图片接口地址
+      this.editor.data.config.uploadImgServer =
+        "http://localhost:3000/upload/editor/img";
+      // 图片字段名
+      this.editor.data.config.uploadFileName = "editorFile";
+      // 图片请求头
+      this.editor.data.config.uploadImgHeaders = {
+        authorization: "Bearer " + localStorage.token,
+      };
+
+      // // 内容改变
+      this.editor.data.config.onchange = (newHtml) => {
+        this.article.content = newHtml;
+      };
+      this.editor.data.config.onchangeTimeout = 500;
+
+      // 设置富文本的显示层级
+      this.editor.data.config.zIndex = 1;
+      // 设置提示文字
+      this.editor.data.config.placeholder = "请输入正文";
+      this.editor.data.create();
+      this.editor.data.txt.html(this.article.content);
+    };
+    getData();
   },
 };
 </script>
