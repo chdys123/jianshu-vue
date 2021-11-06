@@ -1,5 +1,5 @@
 <template>
-    <div>前台页面</div>
+    <div>前台页面.</div>
   </template>
   
   
