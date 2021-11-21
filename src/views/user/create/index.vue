@@ -24,7 +24,7 @@
           <div class="create-f-label">展示封面</div>
           <div class="create-f-item">
             <el-radio v-model="article.coverType" label="单图"></el-radio>
-            <el-radio v-model="article.coverType" label="三图"></el-radio>
+            <el-radio v-model="article.coverType" label="四图"></el-radio>
             <el-radio v-model="article.coverType" label="无封面"></el-radio>
             <div class="create-upload">
               <el-upload
@@ -36,7 +36,7 @@
                 :on-success="handleAvatarSuccess1"
                 :before-upload="beforeAvatarUpload"
                 v-show="
-                  article.coverType == '单图' || article.coverType == '三图'
+                  article.coverType == '单图' || article.coverType == '四图'
                 "
               >
                 <img
@@ -55,7 +55,7 @@
                 name="myfile"
                 :on-success="handleAvatarSuccess2"
                 :before-upload="beforeAvatarUpload"
-                v-show="article.coverType == '三图'"
+                v-show="article.coverType == '四图'"
               >
                 <img
                   v-if="article.coverImg[1]"
@@ -73,11 +73,28 @@
                 name="myfile"
                 :on-success="handleAvatarSuccess3"
                 :before-upload="beforeAvatarUpload"
-                v-show="article.coverType == '三图'"
+                v-show="article.coverType == '四图'"
               >
                 <img
                   v-if="article.coverImg[2]"
                   :src="article.coverImg[2]"
+                  class="avatar"
+                />
+                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+              </el-upload>
+              <el-upload
+                class="avatar-uploader"
+                action="http://localhost:3000/upload/img"
+                :headers="uploaderHeader"
+                :show-file-list="false"
+                name="myfile"
+                :on-success="handleAvatarSuccess4"
+                :before-upload="beforeAvatarUpload"
+                v-show="article.coverType == '四图'"
+              >
+                <img
+                  v-if="article.coverImg[3]"
+                  :src="article.coverImg[3]"
                   class="avatar"
                 />
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -124,7 +141,7 @@ export default {
       createTime: "",
       content: "",
       coverType: "单图",
-      coverImg: ["", "", ""],
+      coverImg: ["", "", "",""],
       author: store.state.user.username,
       authorId: store.state.user._id,
     });
@@ -144,7 +161,7 @@ export default {
           proxy.$message.error("请上传文章封面图片");
           return;
         }
-      } else if (article.coverType == "三图") {
+      } else if (article.coverType == "四图") {
         try {
           article.coverImg.forEach((item) => {
             if (item == "") {
@@ -178,7 +195,8 @@ export default {
             authorId: proxy.$store.state.user._id,
             coverType: article.coverType,
             coverImg: article.coverImg,
-            statu: "审核中",
+            // statu: "审核中",
+            statu: "已发布",
           },
         })
         .then((res) => {
@@ -224,6 +242,9 @@ export default {
     }
     function handleAvatarSuccess3(res, file, fileList) {
       article.coverImg[2] = res.data;
+    }
+    function handleAvatarSuccess4(res, file, fileList) {
+      article.coverImg[3] = res.data;
     }
     // 封面上传前的回调 检测格式
     function beforeAvatarUpload(file) {
@@ -329,6 +350,7 @@ export default {
       handleAvatarSuccess1,
       handleAvatarSuccess2,
       handleAvatarSuccess3,
+      handleAvatarSuccess4,
       beforeAvatarUpload,
       input,
       cgTips,
@@ -390,6 +412,8 @@ export default {
         this.article.content = newHtml;
       };
       this.editor.data.config.onchangeTimeout = 500;
+      this.editor.data.config.showMenuTooltips = true
+      this.editor.data.config.menuTooltipPosition = 'down'
 
       // 设置富文本的显示层级
       this.editor.data.config.zIndex = 1;
@@ -481,14 +505,15 @@ export default {
         display: flex;
 
         .create-f-label {
-          //   background-color: pink;
-          width: 120px;
+            // background-color: pink;
+          width: 110px;
           font-size: 14px;
           text-align: center;
           line-height: 40px;
           margin-right: 20px;
         }
         .create-f-item {
+          // background-color: yellow;
           flex: 1;
           // 自定义单选框样式
           .el-radio__input.is-checked + .el-radio__label {
@@ -525,7 +550,6 @@ export default {
             }
             .avatar {
               width: 150px;
-              //   height: 150px;
               display: block;
             }
           }

@@ -60,9 +60,12 @@ export default {
             localStorage.setItem("token", res.token);
             // 把用户信息存localStorage
             localStorage.setItem("user", JSON.stringify(res.user));
-            
+            // 存vuex
+            proxy.$store.commit("updateUser", res.user);
 
             proxy.$router.push("/user/menu/mainPage");
+            
+
           } else if (res.code == 300) {
             proxy.$message.error("用户名或密码错误");
             // console.log("用户名或密码错误")

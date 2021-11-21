@@ -42,9 +42,10 @@ export default {
     left: 50%;
     transform: translate(-50%, 10px);
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-    z-index: 10;
+    z-index: 100;
   }
   .content::before {
+    z-index: 100;
     content: "";
     width: 100px;
     height: 10px;

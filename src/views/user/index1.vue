@@ -2,7 +2,7 @@
   <div>
     <header class="header">
       <span class="title">简书</span>
-      <span class="toIndex">简书首页</span>
+      <span class="toIndex" @click="$router.push('/')">简书首页</span>
       <img :src="$store.state.user.avatar" class="avatar" />
       <span class="username">{{$store.state.user.username}}</span>
     </header>
@@ -32,18 +32,9 @@ export default {
   },
  
   created() {
-    this.http({
-      method: "post",
-      path: "/verify",
-    }).then((res) => {
-      if (res.code == 200) {
-        // 把信息存vuex
-        this.$store.commit("updateUser", res.user);
-        localStorage.setItem("user", JSON.stringify(res.user));
-      } else {
-        this.$message.error("登录认证失败");
-      }
-    });
+    let user=JSON.parse(localStorage.user)
+    this.$store.commit("updateUser", user);
+    
   },
 };
 </script>

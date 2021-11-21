@@ -168,19 +168,21 @@ export default {
       update();
     }
     // 获取用户信息
+    
     function getData() {
-      proxy
-        .http({
-          method: "post",
-          path: "/verify",
-        })
-        .then((res) => {
-          if (res.code == 200) {
-            form.data = res.user;
-          } else {
-            proxy.$message.error("登录认证失败");
-          }
-        });
+      form.data=JSON.parse(localStorage.user)
+      // proxy
+      //   .http({
+      //     method: "post",
+      //     path: "/verify",
+      //   })
+      //   .then((res) => {
+      //     if (res.code == 200) {
+      //       form.data = res.user;
+      //     } else {
+      //       proxy.$message.error("登录认证失败");
+      //     }
+      //   });
     }
 
     // 修改用户信息
@@ -199,7 +201,7 @@ export default {
               "updateUser",
               JSON.parse(JSON.stringify(toRaw(form.data)))
             );
-            localStorage.setItem("user", JSON.stringify(res.user));
+            localStorage.setItem("user", JSON.stringify(form.data));
           } else if (res.code == 300) {
             proxy.$message.error("个人信息修改失败");
           } else if (res.code == 500) {
@@ -291,6 +293,7 @@ export default {
   },
   // 每次进入组件的时候 重新请求
   created() {
+    console.log("hello")
     this.getData();
   },
 };
