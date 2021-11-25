@@ -46,7 +46,8 @@ export default {
 
 <style lang="less" scoped>
 .comment-haslogon {
-  width: 628px;
+  // width: 628px;
+  width: 100%;
   background-color: #f8f8f8;
   min-height: 100px;
   box-sizing: border-box;
@@ -54,7 +55,8 @@ export default {
   position: relative;
   .comment-input {
     min-height: 38px;
-    width: 596px;
+    // width: 596px;
+    width: 100%;
     border: none;
     outline: none;
     font-size: 16px;
@@ -74,7 +76,8 @@ export default {
     }
   }
   .btn-con {
-    width: 596px;
+    // width: 596px;
+    width: 100%;
     display: flex;
     justify-content: flex-end;
     .comment-btn {

@@ -133,7 +133,7 @@
             <div class="img2" v-if="!isLogin"></div>
           </div>
           <!-- 框框 -->
-          <div>
+          <div class="lqbz">
             <!-- 如果登录 -->
             <comment
               :value="commentForArticle"
@@ -182,14 +182,14 @@
                 <comment
                   :value="commentForComment"
                   @change="change2"
-                  @add="addComment2(arguments, item._id)"
+                  @add="addComment2(null, item._id)"
                   v-if="isLogin"
                 ></comment>
               </div>
               <!-- 评论的回复 -->
               <div class="item-item" v-if="item._id == openHf">
                 <div
-                  v-for="item1 in item.forComment.reverse()"
+                  v-for="item1 in item.forComment"
                   :key="item1._id"
                   class="item-item-con"
                 >
@@ -202,32 +202,89 @@
                     <!-- 用户名 -->
                     <div class="i-i-l-name">{{ item1.username }}</div>
                     <!-- 评论内容 -->
-                    <div class="i-i-l-content">{{ item1.content }}</div>
+                    <div class="i-i-l-content">
+                      {{ item1.content }}
+                      <span v-if="item1.BcId != ''" class="i-i-l-content-x"
+                        >回复@{{ item1.BcName }}:{{ item1.BcContent }}</span
+                      >
+                    </div>
                     <div class="i-i-l-b">
-                      <span class="i-i-l-hf">回复</span>
+                      <span class="i-i-l-hf" @click="clickHf(item1._id)"
+                        >回复</span
+                      >
                       <span class="i-i-l-time">{{
                         handlerTime2(item1.createTime)
                       }}</span>
+                    </div>
+                    <!-- 回复框 -->
+                    <div v-if="item1._id == id1" class="item-hfk1">
+                      <comment
+                        :value="commentForComment"
+                        @change="change2"
+                        @add="addComment2(item1, item._id)"
+                        v-if="isLogin"
+                      ></comment>
                     </div>
                   </div>
                 </div>
               </div>
               <!-- 点击后显示10条回复 -->
-              <div class="item-right-con3">
-                <span @click="clickMoreHf(item._id)">查看全部回复</span>
-                <!-- <span>收起</span> -->
+              <div class="item-right-con3" v-if="item.forComment.length!=0">
+                <span @click="clickMoreHf(item._id)" v-if="item._id !== openHf">查看全部回复</span>
+                <span @click="clickMoreHf(item._id)" v-if="item._id == openHf" class="sq">收起</span>
               </div>
-              <!--  -->
-              <!-- 点击后在展示10条回复 -->
-              <!-- <div class="item-right-con3">查看更多回复</div> -->
             </div>
           </div>
         </div>
 
         <!-- 查看全部多少条评论 -->
-        <div class="more-comment">查看全部1000条评论></div>
+        <div class="more-comment">查看全部{{ article.comment }}条评论></div>
       </div>
-      <div class="right-con">推荐阅读</div>
+
+      <div class="right-con">
+        <div class="r-c-author-msg">
+          <div class="r-c-a-m-c">
+            <img :src="author.avatar" alt="" />
+          </div>
+          <div class="r-c-a-m-name">{{ author.username }}</div>
+          <div class="r-c-a-m-desc">{{ author.desc }}</div>
+          <div v-if="user._id !== article.authorId">
+            <button class="rcam-gz" v-if="isCare" @click="careOrNoCare">
+              已关注
+            </button>
+            <button
+              class="rcam-gz rcam-gz1"
+              v-if="!isCare"
+              @click="careOrNoCare"
+            >
+              关注
+            </button>
+          </div>
+        </div>
+        <!-- Ta的热门作品 -->
+        <div class="tdrmzp">
+          <span> TA的热门作品 </span>
+        </div>
+
+        <!-- 近期最热文章 -->
+        <div class="r-list-con">
+          <div v-for="item in hotArticle" :key="item._id" class="r-list">
+            <!-- 如果有图片 -->
+            <div class="r-list-imgcon" v-if="item.coverType != '无封面'">
+              <img :src="item.coverImg[0]" />
+            </div>
+            <div class="msg-con">
+              <div class="title">
+                {{ item.title }}
+              </div>
+              <div class="msg-con-msg">
+                <span>{{ item.read }}阅读</span>
+                <span class="m-c-m-t">{{ handlerTime(item.createTime) }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -345,7 +402,6 @@ export default {
     // 监听输入框改变
     const change1 = (data) => {
       commentForArticle.value = data;
-      console.log(commentForArticle.value);
     };
     // 对文章发布评论
     const addComment = () => {
@@ -386,8 +442,12 @@ export default {
     let id1 = ref();
     // 点击回复的时候
     const clickHf = (id) => {
-      // 出现评论框
-      id1.value = id;
+      if (id == id1.value) {
+        id1.value = "";
+      } else {
+        // 出现评论框
+        id1.value = id;
+      }
     };
     // 监听输入框改变一级评论
     const change2 = (data) => {
@@ -404,7 +464,7 @@ export default {
             // 文章id
             aId: proxy.$route.query.id,
             // 评论id
-            id,
+            id: id,
             comment: {
               // 回复的userId
               userId: user._id,
@@ -418,13 +478,13 @@ export default {
               createTime: Date.now(),
 
               // 被回复的人id
-              BcId: "",
+              BcId: arg ? arg.userId : "",
               // 被回复的人的姓名,
-              BcName: "",
+              BcName: arg ? arg.username : "",
               // 被回复人头像
-              BcAvatar: "",
+              BcAvatar: arg ? arg.avatar : "",
               // 被回复的内容
-              BcContent: "",
+              BcContent: arg ? arg.content : "",
             },
           },
         })
@@ -444,7 +504,12 @@ export default {
     let openHf = ref("");
     // 点击查看更多回复
     const clickMoreHf = (id) => {
-      openHf.value = id;
+      if(id==openHf.value){
+        openHf.value=''
+      }else{
+        openHf.value = id;
+
+      }
     };
 
     // 点击用户进入用户主页
@@ -547,8 +612,90 @@ export default {
 
     // 点击评论图标执行的方法
     const toComment = () => {
-      let dom1=document.getElementById("js-con")
-      window.scrollTo(0,dom1.clientHeight+50+66)
+      let dom1 = document.getElementById("js-con");
+      window.scrollTo(0, dom1.clientHeight + 50 + 66);
+    };
+    // 作者信息
+    let author = reactive({});
+
+    // 获取作者信息
+    const getAuthorData = (id) => {
+      proxy
+        .http({
+          method: "get",
+          path: "/user/getmsg",
+          params: {
+            id: id,
+          },
+        })
+        .then((res) => {
+          if (res.code == 200) {
+            Object.assign(author, res.data);
+          }
+        });
+    };
+
+    // 是否关注作者的标志
+    let isCare = ref();
+
+    // 获取是否关注该作者的方法
+    const getIsCare = () => {
+      proxy
+        .http({
+          method: "get",
+          path: "user/isCare",
+          params: {
+            userId: user._id,
+            authorId: article.authorId,
+          },
+        })
+        .then((res) => {
+          isCare.value = res.data;
+        });
+    };
+    // 取消或者关注作者的方法
+    const careOrNoCare = () => {
+      let cate = null;
+      // 如果已经关注
+      if (isCare.value) {
+        cate = 2;
+      } else {
+        cate = 1;
+      }
+      proxy
+        .http({
+          method: "get",
+          path: "/user/care",
+          params: {
+            userId: user._id,
+            authorId: article.authorId,
+            cate,
+          },
+        })
+        .then((res) => {
+          if (res.code == 200) {
+            isCare.value = res.data;
+          } else {
+            proxy.$message.error("服务器出现异常");
+          }
+        });
+    };
+    // 作者热门文章
+    let hotArticle = reactive([]);
+    // 获取用户最近最热文章
+    const getHotArticle = () => {
+      proxy
+        .http({
+          method: "get",
+          path: "/article/userHotArticle",
+          params: {
+            id: user._id,
+          },
+        })
+        .then((res) => {
+          console.log(res);
+          hotArticle.push(...res.res);
+        });
     };
 
     return {
@@ -579,6 +726,13 @@ export default {
       getIsStar,
       star,
       toComment,
+      author,
+      getAuthorData,
+      isCare,
+      getIsCare,
+      careOrNoCare,
+      hotArticle,
+      getHotArticle,
     };
   },
 
@@ -600,6 +754,9 @@ export default {
         this.getComment(0, 3);
         this.getIsCollect();
         this.getIsStar();
+        this.getAuthorData(this.article.authorId);
+        this.getIsCare();
+        this.getHotArticle();
       });
   },
 };
@@ -620,7 +777,6 @@ export default {
     // overflow: hidden;
     min-width: 1100px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
-
 
     .web-header-con {
       height: 66px;
@@ -823,6 +979,9 @@ export default {
             background-size: 100%;
           }
         }
+        .lqbz {
+          flex: 1;
+        }
 
         .comment-nologin {
           background-color: #f8f8f8;
@@ -922,10 +1081,15 @@ export default {
                     color: #222222;
                     margin: 10px 0px;
                     font-weight: 400;
+                    .i-i-l-content-x {
+                      font-size: 14px;
+                      color: red;
+                    }
                   }
                   .i-i-l-b {
                     font-size: 14px;
                     color: #222222;
+                    margin-bottom: 10px;
                     .i-i-l-hf {
                       margin-right: 10px;
                       cursor: pointer;
@@ -935,6 +1099,7 @@ export default {
                       font-size: 14px;
                     }
                   }
+                  // 评论框
                 }
               }
             }
@@ -942,6 +1107,9 @@ export default {
               font-size: 14px;
               color: #505050;
               cursor: pointer;
+              .sq{
+                color:#409EFF;
+              }
             }
           }
         }
@@ -963,9 +1131,126 @@ export default {
     }
     .right-con {
       box-sizing: border-box;
+      padding-top: 50px;
       width: 318px;
       // height: 200px;
-      background-color: yellow;
+      .r-c-author-msg {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        .r-c-a-m-c {
+          height: 60px;
+          width: 60px;
+          overflow: hidden;
+          border-radius: 50%;
+          img {
+            width: 60px;
+          }
+        }
+        .r-c-a-m-name {
+          color: #222222;
+          font-size: 16px;
+          margin: 8px 0px 4px;
+        }
+        .r-c-a-m-desc {
+          font-size: 14px;
+          width: 240px;
+          color: #707070;
+          margin-bottom: 12px;
+          word-wrap: break-word;
+        }
+        .rcam-gz {
+          width: 96px;
+          height: 32px;
+          outline: none;
+          border: none;
+          color: #999999;
+          background-color: #f8f8f8;
+          font-size: 14px;
+          border-radius: 4px;
+          cursor: pointer;
+          &:hover {
+            color: #adadad;
+          }
+        }
+        .rcam-gz1 {
+          background-color: #505050;
+          color: #f5f5f5;
+          &:hover {
+            color: #f5f5f5;
+            background-color: #707070;
+          }
+        }
+      }
+      .tdrmzp {
+        margin: 36px 0px 8px;
+        font-size: 14px;
+        color: #222222;
+        height: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        &:before {
+          content: "";
+          min-width: 100px;
+          height: 1px;
+          background-color: #f1f3f4;
+          display: inline-block;
+        }
+        &:after {
+          content: "";
+          min-width: 100px;
+          height: 1px;
+          background-color: #f1f3f4;
+          display: inline-block;
+        }
+      }
+      .r-list-con {
+        .r-list {
+          min-height: 50px;
+          padding: 16px 0px;
+          display: flex;
+          width: 318px;
+          .r-list-imgcon {
+            height: 72px;
+            width: 96px;
+            overflow: hidden;
+            margin-right: 12px;
+            border-radius: 3px;
+            img {
+              width: 96px;
+              cursor: pointer;
+              transition: all 0.5s;
+              &:hover {
+                transform: scale(1.1);
+              }
+            }
+          }
+          .msg-con {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            .title {
+              font-size: 16px;
+              color: #222222;
+              cursor: pointer;
+              &:hover {
+                color: red;
+              }
+            }
+            .msg-con-msg {
+              font-size: 14px;
+              color: #999999;
+
+              .m-c-m-t {
+                margin-left: 16px;
+              }
+            }
+          }
+        }
+      }
     }
   }
   @media screen and (max-width: 1106px) {

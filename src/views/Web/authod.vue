@@ -697,7 +697,7 @@ export default {
             height: 41px;
           }
           .r-list {
-            min-height: 72px;
+            min-height: 50px;
             padding: 16px 0px;
             display: flex;
             width: 318px;

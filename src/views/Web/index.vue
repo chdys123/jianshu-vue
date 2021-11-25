@@ -85,8 +85,7 @@
         </div>
       </div>
     </div>
-    <div class="web-content">
-      <!-- 需要用长列表优化加懒加载 -->
+    <!-- <div class="web-content">
       <div class="left-con">
         <div
           v-for="item in article.data"
@@ -128,6 +127,45 @@
         </div>
       </div>
       <div class="right-con">头条热榜</div>
+
+    </div> -->
+
+    <div class="web-content">
+      <DynamicScroller
+        :items="article.data"
+        :min-item-size="20"
+        class="scroller"
+        page-mode
+        :emitUpdate="true"
+        @update="updateTest"
+      >
+        <template v-slot="{ item, index, active }">
+          <DynamicScrollerItem
+            :item="item"
+            :active="active"
+            :size-dependencies="[item.id]"
+            :data-index="index"
+          >
+            <div class="article-item" :key="item.id">
+              {{ index }}
+              {{ item.title }}
+            </div>
+          </DynamicScrollerItem>
+        </template>
+      </DynamicScroller>
+
+      <div class="web-content-fixed">
+        <div class="wcf-h-con">
+          <i class="iconfont icon-remen"></i>
+          <span class="wcf-h"> 头条热榜 </span>
+        </div>
+        <div v-for="(item,index) in hotArticle" :key="item._id" class="hotArticle-item">
+         <span class="item-index" :class="{index1:index==0,index2:index==1,index3:index==2}">{{index+1}}</span>
+         <span class="item-title">
+          {{ item.title }}
+         </span>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -154,15 +192,24 @@ export default {
     });
 
     // 获取文章数据
-    const getArticle = () => {
-      proxy
+    const getArticle = (start, end) => {
+      return proxy
         .http({
           method: "get",
           path: "/article/findAll",
-          params: {},
+          params: {
+            start: article.data.length,
+          },
         })
         .then((res) => {
-          article.data = res.data;
+          if (res.code == 300) {
+            console.log("没有更多了");
+          } else {
+            res.data.forEach((item, index, arr) => {
+              arr[index].id = item._id;
+            });
+            article.data.push(...res.data);
+          }
         });
     };
 
@@ -208,7 +255,31 @@ export default {
       }
     };
 
+    // test
+    const updateTest = (start, end) => {
+      if (end == article.data.length) {
+        getArticle();
+      }
+    };
+
+    // 头条热榜的文章
+    let hotArticle = reactive([]);
+    // 获取头条热榜
+    const getHotArticle = () => {
+      proxy
+        .http({
+          method: "get",
+          path: "/article/hotArticle",
+          params: {},
+        })
+        .then((res) => {
+          if (res.code == 200) {
+            hotArticle.push(...res.data);
+          }
+        });
+    };
     return {
+      updateTest,
       activeItem,
       isLogin,
       getData,
@@ -217,35 +288,36 @@ export default {
       article,
       handlerTime,
       toArticle,
+      hotArticle,
+      getHotArticle,
     };
   },
   created() {
     this.getArticle();
+    this.getHotArticle();
   },
-
-  mounted() {
-
-  },
+  mounted() {},
 };
 </script>
   
 <style scoped lang="less">
 .web-con {
-  overflow: hidden;
+  // overflow: hidden;
   background-color: #ffffff;
   min-width: 1000px;
-
+  padding-top: 66px;
 
   .web-header {
     height: 66px;
     position: fixed;
+    left: 0;
+    top: 0;
     width: 100%;
     background-color: #ffffff;
     z-index: 9;
     // overflow: hidden;
     min-width: 1100px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
-
 
     .web-header-con {
       height: 66px;
@@ -364,7 +436,7 @@ export default {
       }
     }
   }
-  .web-content {
+  .test-content {
     position: relative;
     height: 1000px;
     // background-color: hotpink;
@@ -460,6 +532,69 @@ export default {
       background-color: yellow;
     }
   }
+  .web-content {
+    position: relative;
+    background-color: pink;
+    width: 1066px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+
+    .scroller {
+      width: 676px;
+      background-color: yellow;
+      .article-item {
+        height: 50px;
+      }
+    }
+    .web-content-fixed {
+      position: fixed;
+      transform: translateX(calc(72px + 676px));
+      width: 318px;
+      min-height: 500px;
+      // background-color: red;
+      .wcf-h-con {
+        margin-bottom: 7px;
+
+        .icon-remen {
+          color: #ee4142;
+          font-size: 22px;
+        }
+        .wcf-h {
+          font-size: 20px;
+          color: #222222;
+        }
+      }
+      .hotArticle-item{
+
+        padding: 12px 0px 12px 4px;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        .item-index{
+          font-size: 20px;
+          margin-right: 8px;
+          color: #999999;
+        }
+        .index1{
+          color: #a82e2e;
+        }
+        .index2{
+          color:#f04142 ;
+        }
+        .index3{
+          color: #ff9a03;
+        }
+        .item-title{
+          cursor: pointer;
+          &:hover{
+            color: #F25758;
+          }
+        }
+      }
+    }
+  }
+
   @media screen and (max-width: 1106px) {
     .web-content {
       margin: 66px 20px 0px 20px;
