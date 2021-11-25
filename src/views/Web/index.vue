@@ -87,46 +87,17 @@
     </div>
     <!-- <div class="web-content">
       <div class="left-con">
+
         <div
           v-for="item in article.data"
           :key="item._id"
           class="item"
-          :data-id="item._id"
-          @click="toArticle(item._id)"
+        
         >
-          <div class="item-left">
-            <span class="title">
-              {{ item.title }}
-            </span>
-            <div class="zw" v-if="item.coverType == '无封面'"></div>
-            <div v-if="item.coverType == '四图'" class="img-con">
-              <div>
-                <img :src="item.coverImg[0]" />
-              </div>
-              <div>
-                <img :src="item.coverImg[1]" />
-              </div>
-              <div>
-                <img :src="item.coverImg[2]" />
-              </div>
-              <div>
-                <img :src="item.coverImg[3]" />
-              </div>
-            </div>
-            <div class="msg">
-              <span>{{ item.author }}</span>
-              <span> {{ item.comment }}条评论 </span>
-              <span>
-                {{ handlerTime(item.createTime) }}
-              </span>
-            </div>
-          </div>
-          <div v-if="item.coverType == '单图'" class="item-right">
-            <img :src="item.coverImg[0]" />
-          </div>
+          
+        
         </div>
       </div>
-      <div class="right-con">头条热榜</div>
 
     </div> -->
 
@@ -146,9 +117,42 @@
             :size-dependencies="[item.id]"
             :data-index="index"
           >
-            <div class="article-item" :key="item.id">
-              {{ index }}
-              {{ item.title }}
+            <div
+              class="article-item"
+              :key="item.id"
+              :data-id="item._id"
+              @click="toArticle(item._id)"
+            >
+              <div class="item-left">
+                <span class="title">
+                  {{ item.title }}
+                </span>
+                <div class="zw" v-if="item.coverType == '无封面'"></div>
+                <div v-if="item.coverType == '四图'" class="img-con">
+                  <div>
+                    <img :src="item.coverImg[0]" />
+                  </div>
+                  <div>
+                    <img :src="item.coverImg[1]" />
+                  </div>
+                  <div>
+                    <img :src="item.coverImg[2]" />
+                  </div>
+                  <div>
+                    <img :src="item.coverImg[3]" />
+                  </div>
+                </div>
+                <div class="msg">
+                  <span>{{ item.author }}</span>
+                  <span> {{ item.comment }}条评论 </span>
+                  <span>
+                    {{ handlerTime(item.createTime) }}
+                  </span>
+                </div>
+              </div>
+              <div v-if="item.coverType == '单图'" class="item-right">
+                <img :src="item.coverImg[0]" />
+              </div>
             </div>
           </DynamicScrollerItem>
         </template>
@@ -159,11 +163,24 @@
           <i class="iconfont icon-remen"></i>
           <span class="wcf-h"> 头条热榜 </span>
         </div>
-        <div v-for="(item,index) in hotArticle" :key="item._id" class="hotArticle-item">
-         <span class="item-index" :class="{index1:index==0,index2:index==1,index3:index==2}">{{index+1}}</span>
-         <span class="item-title">
-          {{ item.title }}
-         </span>
+        <div
+          v-for="(item, index) in hotArticle"
+          :key="item._id"
+          class="hotArticle-item"
+        >
+          <span
+            @click="toArticle(item._id)"
+            class="item-index"
+            :class="{
+              index1: index == 0,
+              index2: index == 1,
+              index3: index == 2,
+            }"
+            >{{ index + 1 }}</span
+          >
+          <span class="item-title" @click="toArticle(item._id)">
+            {{ item.title }}
+          </span>
         </div>
       </div>
     </div>
@@ -449,7 +466,19 @@ export default {
     .left-con {
       width: 676px;
       // background-color: pink;
-      .item {
+    }
+  }
+
+  .web-content {
+    position: relative;
+    width: 1066px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+
+    .scroller {
+      width: 676px;
+      .article-item {
         display: flex;
         padding: 16px 0px;
         .item-left {
@@ -526,27 +555,6 @@ export default {
         }
       }
     }
-    .right-con {
-      box-sizing: border-box;
-      width: 318px;
-      background-color: yellow;
-    }
-  }
-  .web-content {
-    position: relative;
-    background-color: pink;
-    width: 1066px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-
-    .scroller {
-      width: 676px;
-      background-color: yellow;
-      .article-item {
-        height: 50px;
-      }
-    }
     .web-content-fixed {
       position: fixed;
       transform: translateX(calc(72px + 676px));
@@ -565,30 +573,29 @@ export default {
           color: #222222;
         }
       }
-      .hotArticle-item{
-
+      .hotArticle-item {
         padding: 12px 0px 12px 4px;
         font-size: 16px;
         display: flex;
         align-items: center;
-        .item-index{
+        .item-index {
           font-size: 20px;
           margin-right: 8px;
           color: #999999;
         }
-        .index1{
+        .index1 {
           color: #a82e2e;
         }
-        .index2{
-          color:#f04142 ;
+        .index2 {
+          color: #f04142;
         }
-        .index3{
+        .index3 {
           color: #ff9a03;
         }
-        .item-title{
+        .item-title {
           cursor: pointer;
-          &:hover{
-            color: #F25758;
+          &:hover {
+            color: #f25758;
           }
         }
       }

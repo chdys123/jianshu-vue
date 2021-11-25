@@ -229,16 +229,27 @@
                 </div>
               </div>
               <!-- 点击后显示10条回复 -->
-              <div class="item-right-con3" v-if="item.forComment.length!=0">
-                <span @click="clickMoreHf(item._id)" v-if="item._id !== openHf">查看全部回复</span>
-                <span @click="clickMoreHf(item._id)" v-if="item._id == openHf" class="sq">收起</span>
+              <div class="item-right-con3" v-if="item.forComment.length != 0">
+                <span @click="clickMoreHf(item._id)" v-if="item._id !== openHf"
+                  >查看全部回复</span
+                >
+                <span
+                  @click="clickMoreHf(item._id)"
+                  v-if="item._id == openHf"
+                  class="sq"
+                  >收起</span
+                >
               </div>
             </div>
           </div>
         </div>
 
-        <!-- 查看全部多少条评论 -->
-        <div class="more-comment">查看全部{{ article.comment }}条评论></div>
+        <!-- 分页 -->
+        <div class="more-comment">
+          <el-pagination background layout="prev, pager, next" :total="commentTotal" v-model:currentPage="currentPage" 
+          @current-change="handleCurrentChange">
+          </el-pagination>
+        </div>
       </div>
 
       <div class="right-con">
@@ -379,21 +390,24 @@ export default {
     // 评论信息
     let comments = reactive([]);
     // 获取文章的评论
-    const getComment = (start, size) => {
+    const getComment = () => {
       proxy
         .http({
           method: "get",
           path: "comment/web/find",
           params: {
             id: article._id,
-            start,
-            size,
+            start:(currentPage.value-1)*pageSize.value,
+            size:pageSize.value
           },
         })
         .then((res) => {
+          console.log(res)
           if (res.code == 200) {
             comments.length = 0;
             comments.push(...res.data);
+            // 把评论总数赋值
+            commentTotal.value=res.count
           }
         });
     };
@@ -431,7 +445,7 @@ export default {
             // 清空内容
             commentForArticle.value = "";
             // 重新获取三条评论
-            getComment(0, 3);
+            getComment();
           }
         });
     };
@@ -495,7 +509,7 @@ export default {
             commentForComment.value = "";
             proxy.$message.success("回复成功");
             // 然后重新请求一次
-            getComment(0, 3);
+            getComment();
           }
         });
     };
@@ -504,11 +518,10 @@ export default {
     let openHf = ref("");
     // 点击查看更多回复
     const clickMoreHf = (id) => {
-      if(id==openHf.value){
-        openHf.value=''
-      }else{
+      if (id == openHf.value) {
+        openHf.value = "";
+      } else {
         openHf.value = id;
-
       }
     };
 
@@ -698,7 +711,23 @@ export default {
         });
     };
 
+    // 评论总数 
+    let commentTotal=ref(100)
+    // 当前页数
+    let currentPage=ref(1)
+    // 每页数量
+    let pageSize=ref(10)
+    // 当前页改变的时候
+    const handleCurrentChange=(page)=>{
+      console.log(page)
+      // 请求评论
+      getComment()
+    }
     return {
+      pageSize,
+      commentTotal,
+      currentPage,
+      handleCurrentChange,
       id1,
       activeItem,
       isLogin,
@@ -733,6 +762,7 @@ export default {
       careOrNoCare,
       hotArticle,
       getHotArticle,
+
     };
   },
 
@@ -751,7 +781,7 @@ export default {
         Object.assign(this.article, res.data);
       })
       .then(() => {
-        this.getComment(0, 3);
+        this.getComment();
         this.getIsCollect();
         this.getIsStar();
         this.getAuthorData(this.article.authorId);
@@ -1107,25 +1137,29 @@ export default {
               font-size: 14px;
               color: #505050;
               cursor: pointer;
-              .sq{
-                color:#409EFF;
+              .sq {
+                color: #409eff;
               }
             }
           }
         }
       }
-      .more-comment {
-        height: 44px;
-        background-color: #f8f8f8;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        color: #222222;
-        font-size: 16px;
+      .more-comment ::v-deep {
+        // height: 44px;
+        // background-color: #f8f8f8;
+        // display: flex;
+        // justify-content: center;
+        // align-items: center;
+        // color: #222222;
+        // font-size: 16px;
         margin-bottom: 100px;
-        cursor: pointer;
-        &:hover {
-          color: #898989;
+
+        .el-pagination.is-background .el-pager li:not(.disabled).active {
+          background-color: #ee4142;
+          color: white;
+        }
+        .el-pagination.is-background .el-pager li:not(.disabled):hover {
+          color: #ee4142;
         }
       }
     }
