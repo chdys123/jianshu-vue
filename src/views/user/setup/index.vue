@@ -23,7 +23,6 @@
               :on-success="onSuccess"
               :show-file-list="false"
             >
-              <span class="avatar">上传头像</span>
               <img :src="form.data.avatar" />
               <span v-show="form.data.avatar" class="avatar-span"
                 >更换头像</span

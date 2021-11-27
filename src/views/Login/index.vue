@@ -3,7 +3,8 @@
     <el-card class="box-card">
       <template #header>
         <div class="card-header">
-          <span>简书后台管理系统</span>
+          <span v-if="!isReg">登录</span>
+          <span v-if="isReg">注册</span>
         </div>
       </template>
       <el-form :model="user">
@@ -21,10 +22,14 @@
           ></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" class="login-btn" @click="login"
+          <el-button
+            type="primary"
+            class="login-btn"
+            @click="login"
+            :disabled="isReg"
             >登录</el-button
           >
-          <el-button class="regist-btn">注册</el-button>
+          <el-button class="regist-btn" @click="reg">注册</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -64,8 +69,6 @@ export default {
             proxy.$store.commit("updateUser", res.user);
 
             proxy.$router.push("/user/menu/mainPage");
-            
-
           } else if (res.code == 300) {
             proxy.$message.error("用户名或密码错误");
             // console.log("用户名或密码错误")
@@ -74,9 +77,44 @@ export default {
           }
         });
     }
+    // 是否处于注册
+    let isReg = ref(false);
+    // 点击注册按钮
+    function reg() {
+      if (!isReg.value) {
+        isReg.value = true;
+        user.username = null;
+        user.pwd = null;
+      } else {
+        // 就发送http请求
+        proxy
+          .http({
+            method: "post",
+            path: "/reg",
+            params: {
+              username: user.username,
+              pwd: user.pwd,
+            },
+          })
+          .then((res) => {
+            if (res.code == 200) {
+              proxy.$message.success("注册成功");
+              isReg.value=false
+            } else if (res.code == 400) {
+              proxy.$message.error("用户名已经存在");
+            } else if (res.code == 300) {
+              proxy.$message.error("注册失败");
+            } else {
+              proxy.$message.error("服务器出现异常");
+            }
+          });
+      }
+    }
     return {
       user,
       login,
+      reg,
+      isReg,
     };
   },
 };

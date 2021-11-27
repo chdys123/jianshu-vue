@@ -65,6 +65,7 @@ export default {
   .avatar {
     margin-right: 10px;
     width: 30px;
+    height: 30px;
     border-radius: 50%;
     vertical-align: middle;
     cursor: pointer;
