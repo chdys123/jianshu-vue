@@ -29,7 +29,7 @@
           </h1>
           <!-- 时间  作者信息 -->
           <div class="msg">
-            <span class="time">{{ handlerTime.fn(article.createTime) }}</span>
+            <span class="time">{{ handlerTime(article.createTime) }}</span>
             <!-- 点击进入创作者主页 -->
             <span @click="toUserMainPage(article.authorId)" class="authod">{{
               article.author
@@ -89,7 +89,7 @@
                   >回复</span
                 >
                 <span class="item-createTime">{{
-                  handlerTime2.fn(item.createTime)
+                  handlerTime2(item.createTime)
                 }}</span>
               </div>
               <!-- 回复框 -->
@@ -129,7 +129,7 @@
                         >回复</span
                       >
                       <span class="i-i-l-time">{{
-                        handlerTime2.fn(item1.createTime)
+                        handlerTime2(item1.createTime)
                       }}</span>
                     </div>
                     <!-- 回复框 -->
@@ -211,7 +211,7 @@
               </div>
               <div class="msg-con-msg">
                 <span>{{ item.read }}阅读</span>
-                <span class="m-c-m-t">{{ handlerTime.fn(item.createTime) }}</span>
+                <span class="m-c-m-t">{{ handlerTime(item.createTime) }}</span>
               </div>
             </div>
           </div>
@@ -793,6 +793,7 @@ export default {
               }
               .star {
                 // background-color: blue;
+                cursor: pointer;
               }
             }
             .item-right-content {

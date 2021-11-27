@@ -1,7 +1,7 @@
 import { ref, reactive } from "vue"
 export default function () {
-    const handlerTime1 = reactive({
-        fn: (time) => {
+    const handlerTime1 = 
+        (time) => {
             let date = new Date(Number(time));
             if (Date.now() - Number(time) < 60 * 1000) {
                 return Math.floor((Date.now() - Number(time)) / 1000) + "秒前";
@@ -30,8 +30,8 @@ export default function () {
             }
 
         }
-    })
-    const handlerTime2 = reactive({fn:(time) => {
+    
+    const handlerTime2 = (time) => {
         let date = new Date(Number(time));
         let nowYear = new Date(Date.now).getFullYear();
         let year = date.getFullYear();
@@ -52,7 +52,7 @@ export default function () {
           minutes = "0" + minutes;
         }
         return month + "-" + day + " " + hours + ":" + minutes;
-      }})
+      }
     
     return {
         handlerTime1,

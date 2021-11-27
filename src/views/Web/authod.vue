@@ -57,7 +57,7 @@
                 <div class="msg-con-msg">
                   <span>{{ item.read }}阅读</span>
                   <span class="m-c-m-t">{{
-                    handlerTime.fn(item.createTime)
+                    handlerTime(item.createTime)
                   }}</span>
                 </div>
               </div>
@@ -99,7 +99,7 @@
                   <span>{{ item.author }}</span>
                   <span> {{ item.comment }}条评论 </span>
                   <span>
-                    {{ handlerTime.fn(item.createTime) }}
+                    {{ handlerTime(item.createTime) }}
                   </span>
                 </div>
               </div>
@@ -140,7 +140,7 @@
                   <span>{{ item.author }}</span>
                   <span> {{ item.comment }}条评论 </span>
                   <span>
-                    {{ handlerTime.fn(item.createTime) }}
+                    {{ handlerTime(item.createTime) }}
                   </span>
                 </div>
               </div>

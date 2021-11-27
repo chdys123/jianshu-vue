@@ -47,7 +47,7 @@
                   <span>{{ item.author }}</span>
                   <span> {{ item.comment }}条评论 </span>
                   <span>
-                    {{ handlerTime.fn(item.createTime) }}
+                    {{ handlerTime(item.createTime) }}
                   </span>
                 </div>
               </div>

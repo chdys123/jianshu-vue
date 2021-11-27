@@ -63,7 +63,7 @@
           <input type="text" />
           <i class="el-icon-search"></i>
         </div>
-        <button class="logonBtn" v-if="!isLogin">登录</button>
+        <button class="logonBtn" v-if="!isLogin" @click="$router.push('/login')">登录</button>
         <div v-if="isLogin" class="avatar-con">
           <popover>
             <template #content1>
@@ -71,10 +71,10 @@
             </template>
             <template #content2>
               <div class="popover-content">
-                <div>个人主页</div>
+                <div @click="$router.push('/authod?id='+user._id)">个人主页</div>
                 <div @click="$router.push('/user/menu/mainPage')">创作平台</div>
-                <div>我的收藏</div>
-                <div>退出登录</div>
+                <div >我的收藏</div>
+                <div >退出登录</div>
               </div>
             </template>
           </popover>
@@ -100,6 +100,7 @@ export default {
     };
     let isLogin = localStorage.user ? true : false;
     let user = !isLogin ? null : JSON.parse(localStorage.user);
+  
     return {
         activeItem,
         getData,
