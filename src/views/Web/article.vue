@@ -29,7 +29,7 @@
           </h1>
           <!-- 时间  作者信息 -->
           <div class="msg">
-            <span class="time">{{ handlerTime(article.createTime) }}</span>
+            <span class="time">{{ handlerTime.fn(article.createTime) }}</span>
             <!-- 点击进入创作者主页 -->
             <span @click="toUserMainPage(article.authorId)" class="authod">{{
               article.author
@@ -89,7 +89,7 @@
                   >回复</span
                 >
                 <span class="item-createTime">{{
-                  handlerTime2(item.createTime)
+                  handlerTime2.fn(item.createTime)
                 }}</span>
               </div>
               <!-- 回复框 -->
@@ -129,7 +129,7 @@
                         >回复</span
                       >
                       <span class="i-i-l-time">{{
-                        handlerTime2(item1.createTime)
+                        handlerTime2.fn(item1.createTime)
                       }}</span>
                     </div>
                     <!-- 回复框 -->
@@ -211,7 +211,7 @@
               </div>
               <div class="msg-con-msg">
                 <span>{{ item.read }}阅读</span>
-                <span class="m-c-m-t">{{ handlerTime(item.createTime) }}</span>
+                <span class="m-c-m-t">{{ handlerTime.fn(item.createTime) }}</span>
               </div>
             </div>
           </div>
@@ -227,6 +227,8 @@ import { ref, reactive, onMounted, getCurrentInstance, watch } from "vue";
 import { useStore } from "vuex";
 import comment from "../../components/comment.vue";
 import webHeader from "../../components/webHeader.vue"
+import handlerTimefn from "../../hooks/handerTime.js"
+
 
 
 export default {
@@ -245,69 +247,12 @@ export default {
     // 文章的信息
     let article = reactive({});
 
-    // 处理文章或者草稿创作时间的函数
-    const handlerTime = (time) => {
-      let date = new Date(Number(time));
-      let nowYear = new Date(Date.now).getFullYear();
-      let year = date.getFullYear();
-      let month = date.getMonth() + 1;
-      if (month < 10) {
-        month = "0" + month;
-      }
-      let day = date.getDate();
-      if (day < 10) {
-        day = "0" + day;
-      }
-      let hours = date.getHours();
-      if (hours < 10) {
-        hours = "0" + hours;
-      }
-      let minutes = date.getMinutes();
-      if (minutes < 10) {
-        minutes = "0" + minutes;
-      }
-      return month + "-" + day + " " + hours + ":" + minutes;
-    };
+  
+    // 处理时间的函数
+    const {handlerTime1:handlerTime2,handlerTime2:handlerTime}=handlerTimefn()
 
-    // 处理评论时间的函数
-    const handlerTime2 = (time) => {
-      let date = new Date(Number(time));
 
-      if (Date.now() - Number(time) < 60 * 1000) {
-        return Math.floor((Date.now() - Number(time)) / 1000) + "秒前";
-      } else if (Date.now() - Number(time) < 60 * 60 * 1000) {
-        return Math.floor((Date.now() - Number(time)) / (1000 * 60)) + "分钟前";
-      } else if (Date.now() - Number(time) < 24 * 60 * 60 * 1000) {
-        return (
-          Math.floor((Date.now() - Number(time)) / (1000 * 60 * 60)) + "小时前"
-        );
-      }
 
-      let nowYear = new Date(Date.now).getFullYear();
-      let year = date.getFullYear();
-      let month = date.getMonth() + 1;
-      if (month < 10) {
-        month = "0" + month;
-      }
-      let day = date.getDate();
-      if (day < 10) {
-        day = "0" + day;
-      }
-      let hours = date.getHours();
-      if (hours < 10) {
-        hours = "0" + hours;
-      }
-      let minutes = date.getMinutes();
-      if (minutes < 10) {
-        minutes = "0" + minutes;
-      }
-
-      if (Number(nowYear) < date.getFullYear()) {
-        return year + " " + month + "-" + day + " " + hours + ":" + minutes;
-      } else {
-        return month + "-" + day + " " + hours + ":" + minutes;
-      }
-    };
     // 评论信息
     let comments = reactive([]);
     // 获取文章的评论

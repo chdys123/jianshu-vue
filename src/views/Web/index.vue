@@ -47,7 +47,7 @@
                   <span>{{ item.author }}</span>
                   <span> {{ item.comment }}条评论 </span>
                   <span>
-                    {{ handlerTime(item.createTime) }}
+                    {{ handlerTime.fn(item.createTime) }}
                   </span>
                 </div>
               </div>
@@ -92,6 +92,8 @@
 <script>
 import { ref, reactive, onMounted, getCurrentInstance } from "vue";
 import webHeader from "../../components/webHeader.vue"
+import handlerTimefn from "../../hooks/handerTime.js"
+
 export default {
   components: {
     webHeader
@@ -137,35 +139,8 @@ export default {
     };
 
     // 处理文章或者草稿创作时间的函数
-    const handlerTime = (time) => {
-      let date = new Date(Number(time));
-
-      if (Date.now() - Number(time) < 60 * 1000) {
-        return Math.floor((Date.now() - Number(time)) / 1000) + "秒前";
-      } else if (Date.now() - Number(time) < 60 * 60 * 1000) {
-        return Math.floor((Date.now() - Number(time)) / (1000 * 60)) + "分钟前";
-      } else if (Date.now() - Number(time) < 24 * 60 * 60 * 1000) {
-        return (
-          Math.floor((Date.now() - Number(time)) / (1000 * 60 * 60)) + "小时前"
-        );
-      } else if (Date.now() - Number(time) < 24 * 60 * 60 * 1000 * 30) {
-        return (
-          Math.floor((Date.now() - Number(time)) / (1000 * 60 * 60 * 24)) +
-          "天前"
-        );
-      } else if (Date.now() - Number(time) < 24 * 60 * 60 * 1000 * 30 * 12) {
-        return (
-          Math.floor((Date.now() - Number(time)) / (1000 * 60 * 60 * 24 * 30)) +
-          "月前"
-        );
-      } else {
-        return (
-          Math.floor(
-            (Date.now() - Number(time)) / (1000 * 60 * 60 * 24 * 30 * 12)
-          ) + "年前"
-        );
-      }
-    };
+  
+    const {handlerTime1:handlerTime}=handlerTimefn()
 
     // 触底加载
     const updateTest = (start, end) => {

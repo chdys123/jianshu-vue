@@ -19,4 +19,9 @@ import VueVirtualScroller from "vue-virtual-scroller" // 引入它
 const app = createApp(App)
 app.config.globalProperties.http=http
 
+
+
+
+
+
 app.use(element).use(svgIcons).use(store).use(VueAxios, axios).use(router).use(VueVirtualScroller).mount('#app')
