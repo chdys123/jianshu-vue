@@ -34,7 +34,12 @@ const routes = [
         }
     },
     // 搜索页面
+    {
+        path:"/serch",
+        name:"serch",
+        component:()=>import("../views/Web/serach.vue")
 
+    },
 
     // 普通用户后台
     {
