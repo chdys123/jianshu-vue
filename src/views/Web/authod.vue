@@ -1,6 +1,7 @@
 <template>
   <div class="web-con">
-    <web-header></web-header>
+      <web-header></web-header>
+
     <div class="web-content">
       <div class="left-con">
         <div class="author-msg">
@@ -45,7 +46,7 @@
           <!-- 近期最热文章 -->
           <div class="r-list-con">
             <div class="r-list-con-h">近期最热文章</div>
-            <div v-for="item in hotArticle" :key="item._id" class="r-list">
+            <div v-for="item in hotArticle" :key="item._id" class="r-list" @click="toArticle(item._id)">
               <!-- 如果有图片 -->
               <div class="r-list-imgcon" v-if="item.coverType != '无封面'">
                 <img :src="item.coverImg[0]" />
@@ -170,7 +171,7 @@
   <script>
 import { ref, reactive, onMounted, getCurrentInstance } from "vue";
 import webHeader from "../../components/webHeader.vue";
-import handlerTimefn from "../../hooks/handerTime.js"
+import handlerTimefn from "../../hooks/handerTime.js";
 
 export default {
   components: {
@@ -195,9 +196,7 @@ export default {
       });
     };
 
-   
-    const {handlerTime1:handlerTime}=handlerTimefn()
-
+    const { handlerTime1: handlerTime } = handlerTimefn();
 
     // 获取到的作者信息
     let author = reactive({});
@@ -360,12 +359,13 @@ export default {
 .web-con {
   overflow: hidden;
   background-color: #ffffff;
-  min-width: 1000px;
+  // min-width: 1000px;
 
   .web-content {
     position: relative;
-    margin-top: 100px;
-    min-height: 1000px;
+    margin-top: 66px;
+    // background-color: pink;
+    min-height: 100vh;
 
     width: 1066px;
     margin: 66px auto 0px;
@@ -509,7 +509,7 @@ export default {
         }
       }
       .author-content {
-        margin-bottom: 100px;
+        margin-bottom: 50px;
         .item {
           display: flex;
           padding: 16px 0px;

@@ -3,58 +3,53 @@
     <div class="web-header-con">
       <div class="whcl">
         <h1>简书</h1>
+      
         <span
           class="web-item"
           :class="{ 'web-item-active': activeItem == 0 }"
           @click="getData(0)"
-          >推荐</span
+          >技术博客</span
         >
         <span
           class="web-item"
           :class="{ 'web-item-active': activeItem == 1 }"
           @click="getData(1)"
-          >技术博客</span
+          >科技</span
         >
         <span
           class="web-item"
           :class="{ 'web-item-active': activeItem == 2 }"
           @click="getData(2)"
-          >科技</span
+          >娱乐</span
         >
         <span
           class="web-item"
           :class="{ 'web-item-active': activeItem == 3 }"
           @click="getData(3)"
-          >娱乐</span
+          >体育</span
         >
         <span
           class="web-item"
           :class="{ 'web-item-active': activeItem == 4 }"
           @click="getData(4)"
-          >体育</span
+          >游戏</span
         >
         <span
           class="web-item"
           :class="{ 'web-item-active': activeItem == 5 }"
           @click="getData(5)"
-          >游戏</span
+          >历史</span
         >
         <span
           class="web-item"
           :class="{ 'web-item-active': activeItem == 6 }"
           @click="getData(6)"
-          >历史</span
+          >美食</span
         >
         <span
           class="web-item"
           :class="{ 'web-item-active': activeItem == 7 }"
           @click="getData(7)"
-          >美食</span
-        >
-        <span
-          class="web-item"
-          :class="{ 'web-item-active': activeItem == 8 }"
-          @click="getData(8)"
           >社会</span
         >
       </div>
@@ -85,8 +80,10 @@
 </template>
 
 <script>
-import { ref, reactive,getCurrentInstance } from "vue";
+import { ref, reactive,getCurrentInstance ,watch} from "vue";
 import popover from "./popover2.vue";
+import { useRoute, useRouter } from 'vue-router'
+
 
 export default {
   components: {
@@ -94,12 +91,33 @@ export default {
   },
   setup() {
     let { proxy } = getCurrentInstance();
-    let activeItem = ref(0);
+    let route=useRoute()
+    let router=useRouter()
+    let activeItem = ref(route.path!='/'?8:route.query.type);
+    console.log("activeItem:",activeItem.value)
+
+    if(route.fullPath==""||route.fullPath=="/"){
+      activeItem.value=0
+    }
+  
     const getData = (index) => {
       activeItem.value = Number(index);
+      proxy.$router.push("/?type="+index)
     };
     let isLogin = localStorage.user ? true : false;
     let user = !isLogin ? null : JSON.parse(localStorage.user);
+
+
+
+    
+    // watch(()=>route.fullPath,(newData,oldData)=>{
+    //   console.log("变了")
+    //   console.log(newData)
+      
+    //   if(route.path!="/"){
+    //     activeItem.value=''
+    //   }
+    // })
   
     return {
         activeItem,
@@ -107,7 +125,18 @@ export default {
         isLogin,
         user
     }
+    
+    
   },
+  created(){
+    // if(this.$route.path=='/'){
+    //   this.activeItem=this.$route.query.type
+    //   console.log("等于/",this.activeItem)
+    // }else{
+    //   this.activeItem=""
+    //   console.log("不等于",this.activeItem)
+    // }
+  }
 };
 </script>
 

@@ -1,6 +1,7 @@
 <template>
   <div class="web-con">
     <web-header></web-header>
+
     <div class="web-content">
       <!-- 点赞 评论 收藏 -->
       <div class="fixed">
@@ -76,7 +77,9 @@
             <div class="item-right">
               <!-- 名称 与点赞-->
               <div class="item-right-con1">
-                <div class="name" @click="toUserMainPage(item.userId)">{{ item.username }}</div>
+                <div class="name" @click="toUserMainPage(item.userId)">
+                  {{ item.username }}
+                </div>
                 <div class="star">{{ item.star }}</div>
               </div>
               <!-- 评论内容 -->
@@ -110,13 +113,21 @@
                   class="item-item-con"
                 >
                   <!-- 头像 -->
-                  <div class="item-item-img-con" @click="toUserMainPage(item1.userId)">
+                  <div
+                    class="item-item-img-con"
+                    @click="toUserMainPage(item1.userId)"
+                  >
                     <img :src="item1.avatar" />
                   </div>
 
                   <div class="i-i-left">
                     <!-- 用户名 -->
-                    <div class="i-i-l-name" @click="toUserMainPage(item1.userId)">{{ item1.username }}</div>
+                    <div
+                      class="i-i-l-name"
+                      @click="toUserMainPage(item1.userId)"
+                    >
+                      {{ item1.username }}
+                    </div>
                     <!-- 评论内容 -->
                     <div class="i-i-l-content">
                       {{ item1.content }}
@@ -175,7 +186,7 @@
 
       <div class="right-con">
         <div class="r-c-author-msg">
-          <div class="r-c-a-m-c">
+          <div class="r-c-a-m-c" @click="toUserMainPage(article.authorId)">
             <img :src="author.avatar" alt="" />
           </div>
           <div class="r-c-a-m-name">{{ author.username }}</div>
@@ -200,7 +211,12 @@
 
         <!-- 近期最热文章 -->
         <div class="r-list-con">
-          <div v-for="item in hotArticle" :key="item._id" class="r-list">
+          <div
+            v-for="item in hotArticle"
+            :key="item._id"
+            class="r-list"
+            @click="toArticle(item._id)"
+          >
             <!-- 如果有图片 -->
             <div class="r-list-imgcon" v-if="item.coverType != '无封面'">
               <img :src="item.coverImg[0]" />
@@ -226,32 +242,44 @@
 import { ref, reactive, onMounted, getCurrentInstance, watch } from "vue";
 import { useStore } from "vuex";
 import comment from "../../components/comment.vue";
-import webHeader from "../../components/webHeader.vue"
-import handlerTimefn from "../../hooks/handerTime.js"
-
-
+import webHeader from "../../components/webHeader.vue";
+import handlerTimefn from "../../hooks/handerTime.js";
+import { useRoute, useRouter } from "vue-router";
 
 export default {
   components: {
     comment,
-    webHeader
-
+    webHeader,
   },
   setup() {
     const store = useStore();
     let { proxy } = getCurrentInstance();
-  
+    let route = useRoute();
+    let router = useRouter();
+
     let isLogin = localStorage.user ? true : false;
     let user = !isLogin ? null : JSON.parse(localStorage.user);
 
     // 文章的信息
     let article = reactive({});
 
-  
     // 处理时间的函数
-    const {handlerTime1:handlerTime2,handlerTime2:handlerTime}=handlerTimefn()
-
-
+    const { handlerTime1: handlerTime2, handlerTime2: handlerTime } =
+      handlerTimefn();
+    // 进入文章详情页面
+    const toArticle = (id) => {
+      console.log("点击了");
+      if (id !== article._id) {
+        // 数据全部重新获取
+        getAllData(id);
+      }
+      proxy.$router.push({
+        path: "/article",
+        query: {
+          id,
+        },
+      });
+    };
 
     // 评论信息
     let comments = reactive([]);
@@ -580,6 +608,37 @@ export default {
       // 请求评论
       getComment();
     };
+
+    // 页面初始化
+    const getAllData = (aid) => {
+      // 获取传过来的文章id
+      let id = aid ? aid : route.query.id;
+      comments.length = 0;
+      hotArticle.length = 0;
+      // 获取单个文章信息
+      proxy
+        .http({
+          method: "get",
+          path: "/article/findOne",
+          params: {
+            id,
+          },
+        })
+        .then((res) => {
+          Object.assign(article, res.data);
+          document.title = article.title;
+        })
+        .then(() => {
+          getComment();
+          getIsCollect();
+          getIsStar();
+          getAuthorData(article.authorId);
+          getIsCare();
+          getHotArticle();
+        });
+    };
+
+    getAllData();
     return {
       pageSize,
       commentTotal,
@@ -617,32 +676,9 @@ export default {
       careOrNoCare,
       hotArticle,
       getHotArticle,
+      toArticle,
+      getAllData,
     };
-  },
-
-  created() {
-    // 获取传过来的文章id
-    let id = this.$route.query.id;
-    // 获取单个文章信息
-    this.http({
-      method: "get",
-      path: "/article/findOne",
-      params: {
-        id,
-      },
-    })
-      .then((res) => {
-        Object.assign(this.article, res.data);
-        document.title=this.article.title
-      })
-      .then(() => {
-        this.getComment();
-        this.getIsCollect();
-        this.getIsStar();
-        this.getAuthorData(this.article.authorId);
-        this.getIsCare();
-        this.getHotArticle();
-      });
   },
 };
 </script>
@@ -651,12 +687,11 @@ export default {
 .web-con {
   overflow: hidden;
   background-color: #ffffff;
-  min-width: 1000px;
-
+  min-width: 100vh;
 
   .web-content {
     position: relative;
-    min-height: 1000px;
+    // min-height: 1000px;
     width: 1066px;
     margin: 66px auto 0px;
     display: flex;
@@ -789,7 +824,6 @@ export default {
               .name {
                 // background-color: red;
                 cursor: pointer;
-
               }
               .star {
                 // background-color: blue;
@@ -912,6 +946,7 @@ export default {
           width: 60px;
           overflow: hidden;
           border-radius: 50%;
+          cursor: pointer;
           img {
             width: 60px;
           }

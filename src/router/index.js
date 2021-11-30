@@ -3,10 +3,12 @@ import { createRouter, createWebHistory } from 'vue-router'
 // 没有登录不能访问到后台界面。需要配置路由守卫。
 
 const routes = [
+
+
     // 文章列表页面
     {
         path: "",
-        name: "Web",
+        name: "index",
         component: () => import("../views/Web/index.vue"),
         meta:{
             title:"简书"
@@ -31,6 +33,9 @@ const routes = [
             title:"作者主页"
         }
     },
+    // 搜索页面
+
+
     // 普通用户后台
     {
         path: "/user",

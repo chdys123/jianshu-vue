@@ -20,92 +20,108 @@
           >
         </div>
         <div id="text-container"></div>
-        <div class="create-footer">
-          <div class="create-f-label">展示封面</div>
-          <div class="create-f-item">
-            <el-radio v-model="article.coverType" label="单图"></el-radio>
-            <el-radio v-model="article.coverType" label="四图"></el-radio>
-            <el-radio v-model="article.coverType" label="无封面"></el-radio>
-            <div class="create-upload">
-              <el-upload
-                class="avatar-uploader"
-                action="http://localhost:3000/upload/img"
-                :headers="uploaderHeader"
-                :show-file-list="false"
-                name="myfile"
-                :on-success="handleAvatarSuccess1"
-                :before-upload="beforeAvatarUpload"
-                v-show="
-                  article.coverType == '单图' || article.coverType == '四图'
-                "
-              >
-                <img
-                  v-if="article.coverImg[0]"
-                  :src="article.coverImg[0]"
-                  class="avatar"
-                />
-                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-              </el-upload>
+        <div class="create-footer-con">
+          <div class="create-footer">
+            <div class="create-f-label">展示封面</div>
+            <div class="create-f-item">
+              <el-radio v-model="article.coverType" label="单图"></el-radio>
+              <el-radio v-model="article.coverType" label="四图"></el-radio>
+              <el-radio v-model="article.coverType" label="无封面"></el-radio>
+              <div class="create-upload">
+                <el-upload
+                  class="avatar-uploader"
+                  action="http://localhost:3000/upload/img"
+                  :headers="uploaderHeader"
+                  :show-file-list="false"
+                  name="myfile"
+                  :on-success="handleAvatarSuccess1"
+                  :before-upload="beforeAvatarUpload"
+                  v-show="
+                    article.coverType == '单图' || article.coverType == '四图'
+                  "
+                >
+                  <img
+                    v-if="article.coverImg[0]"
+                    :src="article.coverImg[0]"
+                    class="avatar"
+                  />
+                  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                </el-upload>
 
-              <el-upload
-                class="avatar-uploader"
-                action="http://localhost:3000/upload/img"
-                :headers="uploaderHeader"
-                :show-file-list="false"
-                name="myfile"
-                :on-success="handleAvatarSuccess2"
-                :before-upload="beforeAvatarUpload"
-                v-show="article.coverType == '四图'"
-              >
-                <img
-                  v-if="article.coverImg[1]"
-                  :src="article.coverImg[1]"
-                  class="avatar"
-                />
-                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-              </el-upload>
+                <el-upload
+                  class="avatar-uploader"
+                  action="http://localhost:3000/upload/img"
+                  :headers="uploaderHeader"
+                  :show-file-list="false"
+                  name="myfile"
+                  :on-success="handleAvatarSuccess2"
+                  :before-upload="beforeAvatarUpload"
+                  v-show="article.coverType == '四图'"
+                >
+                  <img
+                    v-if="article.coverImg[1]"
+                    :src="article.coverImg[1]"
+                    class="avatar"
+                  />
+                  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                </el-upload>
 
-              <el-upload
-                class="avatar-uploader"
-                action="http://localhost:3000/upload/img"
-                :headers="uploaderHeader"
-                :show-file-list="false"
-                name="myfile"
-                :on-success="handleAvatarSuccess3"
-                :before-upload="beforeAvatarUpload"
-                v-show="article.coverType == '四图'"
+                <el-upload
+                  class="avatar-uploader"
+                  action="http://localhost:3000/upload/img"
+                  :headers="uploaderHeader"
+                  :show-file-list="false"
+                  name="myfile"
+                  :on-success="handleAvatarSuccess3"
+                  :before-upload="beforeAvatarUpload"
+                  v-show="article.coverType == '四图'"
+                >
+                  <img
+                    v-if="article.coverImg[2]"
+                    :src="article.coverImg[2]"
+                    class="avatar"
+                  />
+                  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                </el-upload>
+                <el-upload
+                  class="avatar-uploader"
+                  action="http://localhost:3000/upload/img"
+                  :headers="uploaderHeader"
+                  :show-file-list="false"
+                  name="myfile"
+                  :on-success="handleAvatarSuccess4"
+                  :before-upload="beforeAvatarUpload"
+                  v-show="article.coverType == '四图'"
+                >
+                  <img
+                    v-if="article.coverImg[3]"
+                    :src="article.coverImg[3]"
+                    class="avatar"
+                  />
+                  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                </el-upload>
+              </div>
+
+              <div
+                class="create-upload-tip"
+                v-show="article.coverType != '无封面'"
               >
-                <img
-                  v-if="article.coverImg[2]"
-                  :src="article.coverImg[2]"
-                  class="avatar"
-                />
-                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-              </el-upload>
-              <el-upload
-                class="avatar-uploader"
-                action="http://localhost:3000/upload/img"
-                :headers="uploaderHeader"
-                :show-file-list="false"
-                name="myfile"
-                :on-success="handleAvatarSuccess4"
-                :before-upload="beforeAvatarUpload"
-                v-show="article.coverType == '四图'"
-              >
-                <img
-                  v-if="article.coverImg[3]"
-                  :src="article.coverImg[3]"
-                  class="avatar"
-                />
-                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-              </el-upload>
+                优质的封面有利于推荐，格式支持JPEG、PNG
+              </div>
             </div>
-
-            <div
-              class="create-upload-tip"
-              v-show="article.coverType != '无封面'"
-            >
-              优质的封面有利于推荐，格式支持JPEG、PNG
+          </div>
+          <div class="create-footer">
+            <div class="create-f-label">文章分类</div>
+            <div class="create-f-item">
+              <el-radio v-model="article.class" label="0">技术博客</el-radio>
+              <el-radio v-model="article.class" label="1">科技</el-radio>
+              <el-radio v-model="article.class" label="2">娱乐</el-radio>
+              <el-radio v-model="article.class" label="3">体育</el-radio>
+              <el-radio v-model="article.class" label="4">游戏</el-radio>
+              <el-radio v-model="article.class" label="5">历史</el-radio>
+              <el-radio v-model="article.class" label="6">美食</el-radio>
+              <el-radio v-model="article.class" label="7">社会</el-radio>
+             
             </div>
           </div>
         </div>
@@ -141,9 +157,10 @@ export default {
       createTime: "",
       content: "",
       coverType: "单图",
-      coverImg: ["", "", "",""],
+      coverImg: ["", "", "", ""],
       author: store.state.user.username,
       authorId: store.state.user._id,
+      class:"0"
     });
     // 发布文章
     const submit = async () => {
@@ -187,7 +204,7 @@ export default {
           method: "post",
           path: path,
           params: {
-            id:articleId.value,
+            id: articleId.value,
             title: article.title,
             createTime: Date.now(),
             content: article.content,
@@ -197,26 +214,27 @@ export default {
             coverImg: article.coverImg,
             // statu: "审核中",
             statu: "已发布",
+            class:article.class
           },
         })
         .then((res) => {
           if (res.code == 200) {
             proxy.$message.success("提交成功");
             // 提交成功之后需要删除草稿
-            if(articleId.value==''){
+            if (articleId.value == "") {
               proxy
-              .http({
-                method: "post",
-                path: "/draft/del",
-                params: { _id: draftId.value },
-              })
-              .then((res) => {
-                if (res.code == 200) {
-                  // 然后跳转到文章管理页面
-                  proxy.$router.push("/user/menu/manger/article");
-                }
-              });
-            }else{
+                .http({
+                  method: "post",
+                  path: "/draft/del",
+                  params: { _id: draftId.value },
+                })
+                .then((res) => {
+                  if (res.code == 200) {
+                    // 然后跳转到文章管理页面
+                    proxy.$router.push("/user/menu/manger/article");
+                  }
+                });
+            } else {
               proxy.$router.push("/user/menu/manger/article");
             }
           } else if (res.code == 300) {
@@ -330,8 +348,6 @@ export default {
         }, 1000);
       }
     });
-    // 保存草稿的函数
-    const keepCg = () => {};
 
     // 下方保存草稿提示语
     let cgTips = ref("草稿将自动保存");
@@ -393,6 +409,7 @@ export default {
         this.article.content = res.data.content;
         this.article.coverType = res.data.coverType;
         this.article.coverImg = res.data.coverImg;
+        this.article.class=res.data.class
       }
 
       // 创建wangeditor实例
@@ -412,8 +429,8 @@ export default {
         this.article.content = newHtml;
       };
       this.editor.data.config.onchangeTimeout = 500;
-      this.editor.data.config.showMenuTooltips = true
-      this.editor.data.config.menuTooltipPosition = 'down'
+      this.editor.data.config.showMenuTooltips = true;
+      this.editor.data.config.menuTooltipPosition = "down";
 
       // 设置富文本的显示层级
       this.editor.data.config.zIndex = 1;
@@ -498,14 +515,16 @@ export default {
         width: 100%;
         min-height: 600px;
       }
-      .create-footer ::v-deep {
+      .create-footer-con{
         border-top: 1px solid #e8e8e8;
+
+        .create-footer ::v-deep {
         padding-top: 30px;
         min-height: 50px;
         display: flex;
 
         .create-f-label {
-            // background-color: pink;
+          // background-color: pink;
           width: 110px;
           font-size: 14px;
           text-align: center;
@@ -559,6 +578,9 @@ export default {
           }
         }
       }
+
+      }
+  
     }
   }
 

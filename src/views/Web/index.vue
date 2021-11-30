@@ -1,11 +1,11 @@
 <template>
-
   <div class="web-con">
     <webHeader></webHeader>
+
     <div class="web-content">
       <DynamicScroller
         :items="article.data"
-        :min-item-size="20"
+        :min-item-size="52"
         class="scroller"
         page-mode
         :emitUpdate="true"
@@ -87,32 +87,47 @@
     </div>
   </div>
 </template>
-  
-  
-<script>
-import { ref, reactive, onMounted, getCurrentInstance } from "vue";
-import webHeader from "../../components/webHeader.vue"
-import handlerTimefn from "../../hooks/handerTime.js"
+    
+    
+  <script>
+import {
+  ref,
+  reactive,
+  onMounted,
+  getCurrentInstance,
+  watchEffect,
+  watch,
+} from "vue";
+import { useRoute, useRouter } from "vue-router";
+
+import webHeader from "../../components/webHeader.vue";
+
+import handlerTimefn from "../../hooks/handerTime.js";
 
 export default {
   components: {
-    webHeader
+    webHeader,
   },
   setup() {
     let { proxy } = getCurrentInstance();
+    let route = useRoute();
+    let router = useRouter();
     // 文章列表
     let article = reactive({
       data: [],
     });
+    // 文章的分类
+    let type = ref(proxy.$route.query.type ? proxy.$route.query.type : 0);
 
     // 获取文章数据
-    const getArticle = (start, end) => {
+    const getArticle = () => {
       return proxy
         .http({
           method: "get",
           path: "/article/findAll",
           params: {
             start: article.data.length,
+            Aclass: type.value,
           },
         })
         .then((res) => {
@@ -129,25 +144,36 @@ export default {
 
     // 进入文章详情页面
     const toArticle = (id) => {
-      let routeUrl = proxy.$router.resolve({
+      let routeUrl = proxy.$router.push({
         path: "/article",
         query: {
           id,
         },
       });
-      window.open(routeUrl.href, "_blank");
+      // window.open(routeUrl.href, "_blank");
     };
 
     // 处理文章或者草稿创作时间的函数
-  
-    const {handlerTime1:handlerTime}=handlerTimefn()
+
+    const { handlerTime1: handlerTime } = handlerTimefn();
 
     // 触底加载
     const updateTest = (start, end) => {
-      if (end == article.data.length) {
+      if (end == article.data.length - 1) {
         getArticle();
       }
     };
+
+    watch(
+      () => route.query.type,
+      (newData, oldData) => {
+        if (route.path == "/") {
+          article.data = [];
+          type.value = newData;
+          getArticle();
+        }
+      }
+    );
 
     // 头条热榜的文章
     let hotArticle = reactive([]);
@@ -166,6 +192,7 @@ export default {
         });
     };
     return {
+      type,
       updateTest,
       getArticle,
       article,
@@ -178,37 +205,27 @@ export default {
   created() {
     this.getArticle();
     this.getHotArticle();
-    document.title="简书"
+    document.title = "简书";
   },
   mounted() {},
 };
 </script>
-  
-<style scoped lang="less">
+    
+  <style scoped lang="less">
 .web-con {
   background-color: #ffffff;
   min-width: 1000px;
   padding-top: 66px;
-  .test-content {
-    position: relative;
-    height: 1000px;
-    width: 1066px;
-    margin: 66px auto 0px;
-    display: flex;
-    justify-content: space-between;
-    .left-con {
-      width: 676px;
-    }
-  }
-
   .web-content {
     position: relative;
     width: 1066px;
     margin: 0 auto;
     display: flex;
+    min-height: calc(100vh - 66px);
     justify-content: space-between;
     .scroller {
       width: 676px;
+      // height: calc(100vh - 66px);
       .article-item {
         display: flex;
         padding: 16px 0px;
@@ -337,4 +354,4 @@ export default {
   }
 }
 </style>
-  
+    
