@@ -3,7 +3,7 @@
     <div class="web-header-con">
       <div class="whcl">
         <h1>简书</h1>
-      
+
         <span
           class="web-item"
           :class="{ 'web-item-active': activeItem == 0 }"
@@ -55,10 +55,55 @@
       </div>
       <div class="whcr">
         <div class="web-con-serch">
-          <input type="text" />
-          <i class="el-icon-search"></i>
+          <popover>
+            <template #content1>
+              <input
+                type="text"
+                v-model="serachKey"
+                placeholder="搜索文章或者作者"
+                @input="getSerachData"
+              />
+              <i class="el-icon-search" @click="toSerach"></i>
+            </template>
+            <template #content2>
+              <div class="serach-con-popover" v-if="serachKey != ''">
+                <div class="scp-item">
+                  <span class="scp-label">文章</span>
+                  <div class="scp-body scp-body1">
+                    <div v-for="item in serachData.article" :key="item._id" class="scp-art" @click="$router.push('/article?id='+item._id)">
+                      {{ item.title }}
+                    </div>
+                    <div v-show="serachData.article.length == 0" class="scp-no">
+                      未搜索到相关文章
+                    </div>
+                  </div>
+                </div>
+                <div class="scp-item">
+                  <span class="scp-label">作者</span>
+                  <div class="scp-body">
+                    <div v-for="item in serachData.authod" :key="item._id" class="scp-auth" @click="$router.push('/authod?id='+item._id)">
+                      <div class="scp-auth-imgcon">
+                        <img :src="item.avatar" alt="">
+                      </div>
+                      <span class="scp-name">{{ item.username }}</span>
+                    </div>
+                    <div v-show="serachData.authod.length == 0" class="scp-no">
+                      未搜索到相关作者
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </popover>
         </div>
-        <button class="logonBtn" v-if="!isLogin" @click="$router.push('/login')">登录</button>
+
+        <button
+          class="logonBtn"
+          v-if="!isLogin"
+          @click="$router.push('/login')"
+        >
+          登录
+        </button>
         <div v-if="isLogin" class="avatar-con">
           <popover>
             <template #content1>
@@ -66,10 +111,12 @@
             </template>
             <template #content2>
               <div class="popover-content">
-                <div @click="$router.push('/authod?id='+user._id)">个人主页</div>
+                <div @click="$router.push('/authod?id=' + user._id)">
+                  个人主页
+                </div>
                 <div @click="$router.push('/user/menu/mainPage')">创作平台</div>
-                <div >我的收藏</div>
-                <div >退出登录</div>
+                <div>我的收藏</div>
+                <div>退出登录</div>
               </div>
             </template>
           </popover>
@@ -80,10 +127,9 @@
 </template>
 
 <script>
-import { ref, reactive,getCurrentInstance ,watch} from "vue";
+import { ref, reactive, getCurrentInstance, watch } from "vue";
 import popover from "./popover2.vue";
-import { useRoute, useRouter } from 'vue-router'
-
+import { useRoute, useRouter } from "vue-router";
 
 export default {
   components: {
@@ -91,52 +137,78 @@ export default {
   },
   setup() {
     let { proxy } = getCurrentInstance();
-    let route=useRoute()
-    let router=useRouter()
-    let activeItem = ref(route.path!='/'?8:route.query.type);
-    console.log("activeItem:",activeItem.value)
+    let route = useRoute();
+    let router = useRouter();
+    let activeItem = ref(route.path != "/" ? 8 : route.query.type);
 
-    if(route.fullPath==""||route.fullPath=="/"){
-      activeItem.value=0
+    if (route.fullPath == "" || route.fullPath == "/") {
+      activeItem.value = 0;
     }
-  
+
     const getData = (index) => {
       activeItem.value = Number(index);
-      proxy.$router.push("/?type="+index)
+      proxy.$router.push("/?type=" + index);
     };
     let isLogin = localStorage.user ? true : false;
     let user = !isLogin ? null : JSON.parse(localStorage.user);
 
+    // 搜索框的内容
+    let serachKey = ref("");
+    let timer = null;
+    // 搜索的内容
+    let serachData = reactive({
+      article: [],
+      authod: [],
+    });
 
+    // 监听搜索框数据改变
+    const getSerachData = () => {
+      if (timer) {
+        clearTimeout(timer);
+      }
+      if (!serachKey.value) {
+        serachData.article = [];
+        serachData.authod = [];
+        return;
+      }
+      timer = setTimeout(() => {
+        proxy
+          .http({
+            method: "get",
+            path: "/serach/artAndAuth",
+            params: {
+              key: serachKey.value,
+            },
+          })
+          .then((res) => {
+            serachData.article = res.article;
+            serachData.authod = res.authod;
+          });
+      }, 1000);
+    };
 
-    
-    // watch(()=>route.fullPath,(newData,oldData)=>{
-    //   console.log("变了")
-    //   console.log(newData)
-      
-    //   if(route.path!="/"){
-    //     activeItem.value=''
-    //   }
-    // })
-  
-    return {
-        activeItem,
-        getData,
-        isLogin,
-        user
+    // 进入搜索页面
+    const toSerach=()=>{
+      console.log("点击了")
+      if(serachKey.value){
+        router.push("/serach?key="+serachKey.value)
+      }
+
     }
-    
-    
+
+
+    return {
+      activeItem,
+      getData,
+      isLogin,
+      user,
+      serachKey,
+      getSerachData,
+      serachData,
+      toSerach
+    };
   },
-  created(){
-    // if(this.$route.path=='/'){
-    //   this.activeItem=this.$route.query.type
-    //   console.log("等于/",this.activeItem)
-    // }else{
-    //   this.activeItem=""
-    //   console.log("不等于",this.activeItem)
-    // }
-  }
+  created() {},
 };
 </script>
 
@@ -186,8 +258,10 @@ export default {
     .whcr {
       display: flex;
       align-items: center;
+
       .web-con-serch {
         background-color: #f5f5f5;
+        // background: pink;
         height: 40px;
         padding: 0px 18px;
         display: flex;
@@ -209,6 +283,61 @@ export default {
           font-weight: 700;
           cursor: pointer;
         }
+      }
+      .serach-con-popover {
+        width: 300px;
+        box-sizing: border-box;
+        padding: 10px;
+        font-size: 14px;
+        // background-color: pink;
+        .scp-item {
+          display: flex;
+          .scp-label{
+            padding: 8px 0px;
+          }
+          .scp-body{
+            flex: 1;
+
+            margin-left: 20px;
+            border-left: 1px solid #E2E2E2;
+
+            .scp-art,.scp-auth{
+              padding:8px 0px 8px 8px ;
+              cursor: pointer;
+              &:hover{
+                background-color: #E3E5E7;
+              }
+              
+            }
+            .scp-auth{
+              display: flex;
+              align-items: center;
+              .scp-auth-imgcon{
+                width: 40px;
+                height: 40px;
+                overflow: hidden;
+                border-radius: 50%;
+                img{
+                  width: 40px;
+                  height: 40px;
+                  vertical-align: middle;
+                }
+              }
+              .scp-name{
+                margin-left: 5px;
+              }
+            }
+            .scp-no{
+              padding:8px 0px 8px 8px ;
+
+            }
+          }
+          .scp-body1{
+            border-bottom: 1px solid #E2E2E2;
+          }
+
+        }
+
       }
       .logonBtn {
         height: 40px;

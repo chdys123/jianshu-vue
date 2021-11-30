@@ -35,8 +35,8 @@ const routes = [
     },
     // 搜索页面
     {
-        path:"/serch",
-        name:"serch",
+        path:"/serach",
+        name:"serach",
         component:()=>import("../views/Web/serach.vue")
 
     },

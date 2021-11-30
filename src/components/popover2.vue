@@ -37,8 +37,9 @@ export default {
 
   .popover-content2::before {
     content: "";
-    width: 100px;
+    width: 100%;
     height: 10px;
+    z-index: 100;
     background-color: transparent;
     position: absolute;
     top: 0;

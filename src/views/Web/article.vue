@@ -281,6 +281,12 @@ export default {
       });
     };
 
+    watch(()=>route.fullPath,(newData,oldData)=>{
+      if(route.path=="/article"){
+        getAllData(route.query.id);
+      }
+    })
+
     // 评论信息
     let comments = reactive([]);
     // 获取文章的评论

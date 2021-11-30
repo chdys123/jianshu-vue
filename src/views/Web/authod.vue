@@ -1,6 +1,6 @@
 <template>
   <div class="web-con">
-      <web-header></web-header>
+    <web-header></web-header>
 
     <div class="web-content">
       <div class="left-con">
@@ -46,7 +46,12 @@
           <!-- 近期最热文章 -->
           <div class="r-list-con">
             <div class="r-list-con-h">近期最热文章</div>
-            <div v-for="item in hotArticle" :key="item._id" class="r-list" @click="toArticle(item._id)">
+            <div
+              v-for="item in hotArticle"
+              :key="item._id"
+              class="r-list"
+              @click="toArticle(item._id)"
+            >
               <!-- 如果有图片 -->
               <div class="r-list-imgcon" v-if="item.coverType != '无封面'">
                 <img :src="item.coverImg[0]" />
@@ -169,9 +174,10 @@
 </template>
     
   <script>
-import { ref, reactive, onMounted, getCurrentInstance } from "vue";
+import { ref, reactive, onMounted, getCurrentInstance, watch } from "vue";
 import webHeader from "../../components/webHeader.vue";
 import handlerTimefn from "../../hooks/handerTime.js";
+import { useRoute, useRouter } from "vue-router";
 
 export default {
   components: {
@@ -179,6 +185,7 @@ export default {
   },
   setup() {
     let { proxy } = getCurrentInstance();
+    let route = useRoute();
 
     let isLogin = localStorage.user ? true : false;
     let user = !isLogin ? null : JSON.parse(localStorage.user);
@@ -208,10 +215,10 @@ export default {
       articleOrLike.value = num;
     };
     // 作者写的文章
-    let article = reactive({});
+    let article = reactive([]);
 
     // 作者收藏的文章
-    let articleLiked = reactive({});
+    let articleLiked = reactive([]);
 
     // 获取作者的文章
     const getArticle = () => {
@@ -224,7 +231,8 @@ export default {
           },
         })
         .then((res) => {
-          Object.assign(article, res.res);
+          article.length = 0;
+          article.push(...res.res);
         });
     };
     // 获取作者收藏的文章
@@ -238,7 +246,8 @@ export default {
           },
         })
         .then((res) => {
-          Object.assign(articleLiked, res.res);
+          articleLiked.length = 0;
+          articleLiked.push(...res.res);
         });
     };
     // 是否关注作者的标志
@@ -300,9 +309,48 @@ export default {
           },
         })
         .then((res) => {
+          hotArticle.length = 0;
           hotArticle.push(...res.res);
         });
     };
+
+    // 页面数据初始化
+    const getPageData = () => {
+      // 获取传过来的用户id
+      id.value = route.query.id;
+      // 获取用户信息
+      proxy
+        .http({
+          method: "get",
+          path: "/user/getmsg",
+          params: {
+            id: id.value,
+          },
+        })
+        .then((res) => {
+          author = Object.assign(author, res.data);
+          document.title = author.username + "的主页";
+        });
+      // 获取文章信息
+      getArticle();
+      // 获取收藏的文章
+      getLiked();
+      // 是否关注
+      getIsCare();
+      // 获取作者近期最热文章
+      getHotArticle();
+    };
+
+    watch(
+      () => route.fullPath,
+      (newData, oldData) => {
+        if (route.path == "/authod") {
+          getPageData();
+        }
+      }
+    );
+    getPageData();
+
     return {
       id,
       isLogin,
@@ -321,35 +369,8 @@ export default {
       careOrNoCare,
       hotArticle,
       getHotArticle,
+      getPageData,
     };
-  },
-  created() {
-    // 获取传过来的用户id
-    this.id = this.$route.query.id;
-    // 获取用户信息
-    this.http({
-      method: "get",
-      path: "/user/getmsg",
-      params: {
-        id: this.id,
-      },
-    }).then((res) => {
-      this.author = Object.assign(this.author, res.data);
-      document.title = this.author.username + "的主页";
-    });
-
-    // 获取文章信息
-    this.getArticle();
-    // 获取收藏的文章
-    this.getLiked();
-    // 是否关注
-    this.getIsCare();
-    // 获取作者近期最热文章
-    this.getHotArticle();
-  },
-
-  mounted() {
-    // window.scrollTo(0,0);
   },
 };
 </script>
