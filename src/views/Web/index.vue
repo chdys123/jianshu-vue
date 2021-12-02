@@ -307,6 +307,7 @@ export default {
       min-height: 500px;
       // background-color: red;
       .wcf-h-con {
+        margin-top: 30px;
         margin-bottom: 7px;
 
         .icon-remen {

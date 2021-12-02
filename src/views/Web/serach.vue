@@ -1,7 +1,9 @@
 <template>
-    <web-header></web-header>
     <div class="serach-con">
-        123456
+        <div>
+            <span>文章</span>
+            <span>用户</span>
+        </div>
 
     </div>
 </template>
@@ -12,10 +14,9 @@ import {ref,reactive} from "vue"
 import {useRoute,useRouter} from "vue-router"
 import webHeader from "../../components/webHeader.vue"
 export default {
-    components:{
-        webHeader
-    },
+    
     setup() {
+        document.title="搜索"
         
     },
 }

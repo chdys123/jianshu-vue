@@ -28,6 +28,7 @@ export default {
   position: relative;
   display: inline-block;
   vertical-align: middle;
+  width: 100%;
   // background-color: blue;
 
   &:hover > .popover-content2 {
@@ -57,6 +58,9 @@ export default {
     background-color: yellow;
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
     background-color: #ffffff;
+  }
+  .popover-content1{
+    width: 100%;
   }
 }
 </style>

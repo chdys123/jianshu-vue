@@ -15,12 +15,12 @@
                 <span class="msg-sz">{{ author.star }}</span>
                 <span class="msg-wz">获赞</span>
               </div>
-              <div class="msg-star">
-                <span class="msg-sz">{{ author.fans }}</span>
+              <div class="msg-star" @click="clickFansOrCare(1)">
+                <span class="msg-sz">{{ author.fans.length }}</span>
                 <span class="msg-wz">粉丝</span>
               </div>
-              <div class="msg-star">
-                <span class="msg-sz">{{ author.careId }}</span>
+              <div class="msg-star" @click="clickFansOrCare(2)">
+                <span class="msg-sz">{{ author.careId.length }}</span>
                 <span class="msg-wz">关注</span>
               </div>
             </div>
@@ -170,6 +170,89 @@
         <div class="likeBtn-con" v-if="user._id == id"></div>
       </div>
     </div>
+
+    <el-drawer v-model="drawer" :with-header="false">
+      <div class="drawer-tabar">
+        <span
+          class="drawer-tabar-span"
+          :class="{ 'drawer-tabar-active': drawerActive == 1 }"
+          @click="clickDrawerFansOrCare(1)"
+          >粉丝{{ author.fans.length }}</span
+        >
+        <span
+          @click="clickDrawerFansOrCare(2)"
+          :class="{ 'drawer-tabar-active': drawerActive == 2 }"
+          >关注{{ author.careId.length }}</span
+        >
+      </div>
+      <div class="drawer-body">
+        <el-scrollbar>
+          <div class="list-con fans-con" v-show="drawerActive == 1">
+            <div
+              v-for="(item, index) in fansArr"
+              :key="item.id"
+              class="item-con"
+            >
+              <div class="ImgCon">
+                <img :src="item.avatar" />
+              </div>
+
+              <div class="fans-msg">
+                <span class="fans-name">{{ item.username }}</span>
+                <span class="fans-fansCount">{{ item.fansCount }}粉丝</span>
+              </div>
+
+              <button
+                class="nocare-btn"
+                v-if="!item.isCare"
+                @click="careAndNoCare(1, index, item.id, 1)"
+              >
+                关注
+              </button>
+              <button
+                class="care-btn"
+                v-if="item.isCare"
+                @click="careAndNoCare(1, index, item.id, 2)"
+              >
+                已关注
+              </button>
+            </div>
+          </div>
+
+          <div class="list-con careId-con" v-show="drawerActive == 2">
+            <div
+              v-for="(item, index) in careArr"
+              :key="item.id"
+              class="item-con"
+            >
+              <div class="ImgCon">
+                <img :src="item.avatar" />
+              </div>
+
+              <div class="fans-msg">
+                <span class="fans-name">{{ item.username }}</span>
+                <span class="fans-fansCount">{{ item.fansCount }}粉丝</span>
+              </div>
+
+              <button
+                class="nocare-btn"
+                v-if="!item.isCare"
+                @click="careAndNoCare(2, index, item.id, 1)"
+              >
+                关注
+              </button>
+              <button
+                class="care-btn"
+                v-if="item.isCare"
+                @click="careAndNoCare(2, index, item.id, 2)"
+              >
+                已关注
+              </button>
+            </div>
+          </div>
+        </el-scrollbar>
+      </div>
+    </el-drawer>
   </div>
 </template>
     
@@ -191,7 +274,7 @@ export default {
     let user = !isLogin ? null : JSON.parse(localStorage.user);
 
     // 当前页面用户id
-    let id = ref("");
+    let id = ref(route.query.id);
 
     // 进入文章详情页面
     const toArticle = (id) => {
@@ -206,7 +289,10 @@ export default {
     const { handlerTime1: handlerTime } = handlerTimefn();
 
     // 获取到的作者信息
-    let author = reactive({});
+    let author = reactive({
+      fans: [],
+      careId: [],
+    });
 
     // 文章或者收藏的flag
     let articleOrLike = ref(0);
@@ -290,6 +376,11 @@ export default {
         .then((res) => {
           if (res.code == 200) {
             isCare.value = res.data;
+            if (cate == 2) {
+              author.fans.length--;
+            } else {
+              author.fans.length++;
+            }
           } else {
             proxy.$message.error("服务器出现异常");
           }
@@ -339,6 +430,13 @@ export default {
       getIsCare();
       // 获取作者近期最热文章
       getHotArticle();
+
+      // 获取粉丝列表
+      fansArr.length = 0;
+      getFans();
+      careArr.length = 0;
+      // 获取关注列表
+      getCare();
     };
 
     watch(
@@ -349,6 +447,127 @@ export default {
         }
       }
     );
+
+    // 是否展示抽屉
+    let drawer = ref(false);
+
+    // 抽屉里面的activeitem
+    let drawerActive = ref(1);
+
+    // 粉丝数据
+    let fansArr = reactive([]);
+    // 关注数据
+    let careArr = reactive([]);
+
+    // 获取粉丝数据 后期需要懒加载
+    const getFans = () => {
+      proxy
+        .http({
+          method: "get",
+          path: "/user/getFans",
+          params: {
+            authorId: id.value,
+            userId: user._id,
+          },
+        })
+        .then((res) => {
+          fansArr.push(...res.data);
+        });
+    };
+
+    // 获取关注数据 后期需要懒加载
+    const getCare = () => {
+      proxy
+        .http({
+          method: "get",
+          path: "/user/getCare",
+          params: {
+            authorId: id.value,
+            userId: user._id,
+          },
+        })
+        .then((res) => {
+          careArr.push(...res.data);
+        });
+    };
+    // 点击关注或者取关
+    const careAndNoCare = (type, index, id, cate) => {
+      proxy
+        .http({
+          method: "get",
+          path: "/user/care",
+          params: {
+            userId: user._id,
+            authorId: id,
+            cate,
+          },
+        })
+        .then((res) => {
+          if (res.code == 200) {
+            if (type == 1) {
+              fansArr[index].isCare = cate == 1 ? true : false;
+              if (cate == 1) {
+                fansArr[index].fansCount++;
+              } else {
+                fansArr[index].fansCount--;
+              }
+            } else {
+              careArr[index].isCare = cate == 1 ? true : false;
+              if (cate == 1) {
+                careArr[index].fansCount++;
+              } else {
+                careArr[index].fansCount--;
+              }
+            }
+
+            // 如果当前用户与当前作者页面相同
+            if (user._id == author._id) {
+              if (cate == 1) {
+                author.careId.length++;
+              } else {
+                author.careId.length--;
+              }
+            }
+          } else {
+            proxy.$message.error("出现异常稍后再试");
+          }
+        });
+    };
+
+    // 点击抽屉里面里面的粉丝与关注 每次要重新获取数据
+    const clickDrawerFansOrCare = (index) => {
+      if (index == drawerActive.value) {
+        return;
+      }
+      if (index == 1) {
+        // 获取粉丝列表
+        fansArr.length = 0;
+        getFans();
+        drawerActive.value = index;
+      } else {
+        // 获取关注列表
+        careArr.length = 0;
+        getCare();
+        drawerActive.value = index;
+      }
+    };
+
+    // 点击外面的粉丝与关注也是 重新获取数据
+    const clickFansOrCare = (index) => {
+      drawer.value = true;
+      if (index == 1) {
+        // 获取粉丝列表
+        fansArr.length = 0;
+        getFans();
+        drawerActive.value = index;
+      } else {
+        // 获取关注列表
+        careArr.length = 0;
+        getCare();
+        drawerActive.value = index;
+      }
+    };
+
     getPageData();
 
     return {
@@ -370,11 +589,21 @@ export default {
       hotArticle,
       getHotArticle,
       getPageData,
+      drawer,
+      drawerActive,
+      fansArr,
+      careArr,
+      getFans,
+      careAndNoCare,
+      getCare,
+      clickDrawerFansOrCare,
+      clickFansOrCare,
     };
   },
 };
 </script>
     
+
 
   <style scoped lang="less">
 .web-con {
@@ -395,8 +624,8 @@ export default {
 
     .left-con {
       width: 676px;
-      //   background-color: pink;
       padding-top: 50px;
+      // background-color: pink;
       .author-msg {
         min-height: 100px;
         display: flex;
@@ -427,6 +656,8 @@ export default {
               margin-right: 40px;
               display: flex;
               align-items: center;
+              cursor: pointer;
+              // background-color: pink;
               .msg-sz {
                 font-size: 24px;
               }
@@ -612,6 +843,7 @@ export default {
     .right-con {
       box-sizing: border-box;
       width: 318px;
+      // background:yellow;
       .likeBtn-con {
         margin-top: 50px;
         width: 180px;
@@ -645,6 +877,112 @@ export default {
   @media screen and (max-width: 1106px) {
     .web-content {
       margin: 66px 20px 0px 20px;
+    }
+  }
+
+  .el-drawer {
+    display: flex;
+    flex-direction: column;
+    .drawer-tabar {
+      height: 30px;
+      // background-color: yellow;
+      font-size: 20px;
+      color: #333333;
+      display: flex;
+      margin-bottom: 10px;
+      span {
+        cursor: pointer;
+        position: relative;
+      }
+      .drawer-tabar-span {
+        margin-right: 20px;
+      }
+      .drawer-tabar-active {
+        &::after {
+          position: absolute;
+          content: "";
+          bottom: -3px;
+          left: 50%;
+          transform: translateX(-50%);
+          height: 3px;
+          width: 30px;
+          background-color: red;
+          border-radius: 2px;
+        }
+      }
+    }
+    .drawer-body {
+      height: calc(100vh - 80px);
+      width: 100%;
+      // background: pink;
+      .list-con {
+        .item-con {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 8px 0px;
+          height: 44px;
+          // background-color: pink;
+          cursor: pointer;
+          &:hover {
+            background-color: #f8f8f8;
+          }
+          .ImgCon {
+            width: 44px;
+            height: 44px;
+            overflow: hidden;
+            border-radius: 50%;
+            margin-right: 10px;
+            img {
+              width: 44px;
+              height: 44px;
+            }
+          }
+          .fans-msg {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-start;
+            .fans-name {
+              color: #222222;
+              font-size: 16px;
+            }
+            .fans-fansCount {
+              color: #707070;
+              font-size: 14px;
+            }
+          }
+          .nocare-btn {
+            cursor: pointer;
+            height: 30px;
+            width: 50px;
+            outline: none;
+            border: 0px;
+            border-radius: 5px;
+            color: #ededed;
+            background-color: red;
+            font-size: 12px;
+            &:hover {
+              background-color: #f04142;
+            }
+          }
+          .care-btn {
+            cursor: pointer;
+            height: 30px;
+            width: 50px;
+            outline: none;
+            border: 0px;
+            border-radius: 5px;
+            color: #999999;
+            background-color: #f6f6f7;
+            font-size: 12px;
+            &:hover {
+              background-color: #f8f8f8;
+            }
+          }
+        }
+      }
     }
   }
 }

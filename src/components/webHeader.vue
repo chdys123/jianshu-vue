@@ -4,73 +4,82 @@
       <div class="whcl">
         <h1>简书</h1>
 
-        <span
-          class="web-item"
-          :class="{ 'web-item-active': activeItem == 0 }"
-          @click="getData(0)"
-          >技术博客</span
-        >
-        <span
-          class="web-item"
-          :class="{ 'web-item-active': activeItem == 1 }"
-          @click="getData(1)"
-          >科技</span
-        >
-        <span
-          class="web-item"
-          :class="{ 'web-item-active': activeItem == 2 }"
-          @click="getData(2)"
-          >娱乐</span
-        >
-        <span
-          class="web-item"
-          :class="{ 'web-item-active': activeItem == 3 }"
-          @click="getData(3)"
-          >体育</span
-        >
-        <span
-          class="web-item"
-          :class="{ 'web-item-active': activeItem == 4 }"
-          @click="getData(4)"
-          >游戏</span
-        >
-        <span
-          class="web-item"
-          :class="{ 'web-item-active': activeItem == 5 }"
-          @click="getData(5)"
-          >历史</span
-        >
-        <span
-          class="web-item"
-          :class="{ 'web-item-active': activeItem == 6 }"
-          @click="getData(6)"
-          >美食</span
-        >
-        <span
-          class="web-item"
-          :class="{ 'web-item-active': activeItem == 7 }"
-          @click="getData(7)"
-          >社会</span
-        >
+        <div class="web-items">
+          <span
+            class="web-item"
+            :class="{ 'web-item-active': activeItem == 0 }"
+            @click="getData(0)"
+            >技术博客</span
+          >
+          <span
+            class="web-item"
+            :class="{ 'web-item-active': activeItem == 1 }"
+            @click="getData(1)"
+            >科技</span
+          >
+          <span
+            class="web-item"
+            :class="{ 'web-item-active': activeItem == 2 }"
+            @click="getData(2)"
+            >娱乐</span
+          >
+          <span
+            class="web-item"
+            :class="{ 'web-item-active': activeItem == 3 }"
+            @click="getData(3)"
+            >体育</span
+          >
+          <span
+            class="web-item"
+            :class="{ 'web-item-active': activeItem == 4 }"
+            @click="getData(4)"
+            >游戏</span
+          >
+          <span
+            class="web-item"
+            :class="{ 'web-item-active': activeItem == 5 }"
+            @click="getData(5)"
+            >历史</span
+          >
+          <span
+            class="web-item"
+            :class="{ 'web-item-active': activeItem == 6 }"
+            @click="getData(6)"
+            >美食</span
+          >
+          <span
+            class="web-item"
+            :class="{ 'web-item-active': activeItem == 7 }"
+            @click="getData(7)"
+            >社会</span
+          >
+        </div>
       </div>
       <div class="whcr">
         <div class="web-con-serch">
           <popover>
             <template #content1>
-              <input
-                type="text"
-                v-model="serachKey"
-                placeholder="搜索文章或者作者"
-                @input="getSerachData"
-              />
-              <i class="el-icon-search" @click="toSerach"></i>
+              <div class="wcs-con">
+                <input
+                  type="text"
+                  v-model="serachKey"
+                  placeholder="搜索文章或者作者"
+                  @input="getSerachData"
+                />
+                <i class="el-icon-search" @click="toSerach"></i>
+              </div>
             </template>
             <template #content2>
               <div class="serach-con-popover" v-if="serachKey != ''">
                 <div class="scp-item">
                   <span class="scp-label">文章</span>
                   <div class="scp-body scp-body1">
-                    <div v-for="item in serachData.article" :key="item._id" class="scp-art" @click="$router.push('/article?id='+item._id)">
+                    <div
+                      v-for="item in serachData.article"
+                      :key="item._id"
+                      class="scp-art"
+                      @click="$router.push('/article?id=' + item._id)"
+                    >
                       {{ item.title }}
                     </div>
                     <div v-show="serachData.article.length == 0" class="scp-no">
@@ -81,9 +90,14 @@
                 <div class="scp-item">
                   <span class="scp-label">作者</span>
                   <div class="scp-body">
-                    <div v-for="item in serachData.authod" :key="item._id" class="scp-auth" @click="$router.push('/authod?id='+item._id)">
+                    <div
+                      v-for="item in serachData.authod"
+                      :key="item._id"
+                      class="scp-auth"
+                      @click="$router.push('/authod?id=' + item._id)"
+                    >
                       <div class="scp-auth-imgcon">
-                        <img :src="item.avatar" alt="">
+                        <img :src="item.avatar" alt="" />
                       </div>
                       <span class="scp-name">{{ item.username }}</span>
                     </div>
@@ -188,14 +202,12 @@ export default {
     };
 
     // 进入搜索页面
-    const toSerach=()=>{
-      console.log("点击了")
-      if(serachKey.value){
-        router.push("/serach?key="+serachKey.value)
+    const toSerach = () => {
+      console.log("点击了");
+      if (serachKey.value) {
+        router.push("/serach?key=" + serachKey.value);
       }
-
-    }
-
+    };
 
     return {
       activeItem,
@@ -205,7 +217,7 @@ export default {
       serachKey,
       getSerachData,
       serachData,
-      toSerach
+      toSerach,
     };
   },
   created() {},
@@ -221,67 +233,92 @@ export default {
   width: 100%;
   background-color: #ffffff;
   z-index: 9;
-  min-width: 1100px;
+  min-width: 1106px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
   .web-header-con {
     height: 66px;
-    padding: 0px 20px;
     box-sizing: border-box;
     vertical-align: middle;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    // justify-content: space-between;
     margin: 0 auto;
+    width: 1334px;
+
+    // background-color: skyblue;
     .whcl {
       display: flex;
-      flex: 1;
       justify-content: space-between;
       align-items: center;
+      // width: 676px;
+
+      // background-color: pink;
+      margin-right: 70px;
       h1 {
         color: #ee4142;
+        width: 134px;
+        // background-color: yellow;
+        text-align: center;
       }
-      .web-item {
-        font-size: 18px;
-        color: #222222;
-        cursor: pointer;
-        &:hover {
-          color: #707070;
+      .web-items {
+        // background-color: pink;
+        width: 676px;
+        display: flex;
+        justify-content: space-between;
+        .web-item {
+          font-size: 18px;
+          color: #222222;
+          cursor: pointer;
+          &:hover {
+            color: #707070;
+          }
         }
-      }
-      .web-item-active {
-        color: #ee4142;
-        &:hover {
+        .web-item-active {
           color: #ee4142;
+          &:hover {
+            color: #ee4142;
+          }
         }
       }
     }
     .whcr {
       display: flex;
       align-items: center;
+      flex: 1;
+      // background-color: red;
 
       .web-con-serch {
         background-color: #f5f5f5;
         // background: pink;
         height: 40px;
         padding: 0px 18px;
-        display: flex;
-        align-items: center;
+        flex: 1;
         border-radius: 5px;
         vertical-align: middle;
-        margin: 0px 20px 0px 70px;
-        input {
-          height: 40px;
-          border: none;
-          background-color: #f5f5f5;
-          outline: none;
-          margin-right: 18px;
-          font-size: 18px;
-        }
-        .el-icon-search {
-          color: #ee4142;
-          font-size: 20px;
-          font-weight: 700;
-          cursor: pointer;
+        margin-right: 30px;
+        .wcs-con {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          // background:yellow;
+          input {
+            flex: 1;
+            height: 40px;
+            border: none;
+            background-color: #f5f5f5;
+            // background-color: pink;
+            outline: none;
+            margin-right: 18px;
+            font-size: 18px;
+          }
+          .el-icon-search {
+            // background-color: blue;
+            color: #ee4142;
+            font-size: 20px;
+            font-weight: 700;
+            cursor: pointer;
+          }
         }
       }
       .serach-con-popover {
@@ -292,52 +329,49 @@ export default {
         // background-color: pink;
         .scp-item {
           display: flex;
-          .scp-label{
+          .scp-label {
             padding: 8px 0px;
           }
-          .scp-body{
+          .scp-body {
             flex: 1;
 
             margin-left: 20px;
-            border-left: 1px solid #E2E2E2;
+            border-left: 1px solid #e2e2e2;
 
-            .scp-art,.scp-auth{
-              padding:8px 0px 8px 8px ;
+            .scp-art,
+            .scp-auth {
+              padding: 8px 0px 8px 8px;
               cursor: pointer;
-              &:hover{
-                background-color: #E3E5E7;
+              &:hover {
+                background-color: #e3e5e7;
               }
-              
             }
-            .scp-auth{
+            .scp-auth {
               display: flex;
               align-items: center;
-              .scp-auth-imgcon{
+              .scp-auth-imgcon {
                 width: 40px;
                 height: 40px;
                 overflow: hidden;
                 border-radius: 50%;
-                img{
+                img {
                   width: 40px;
                   height: 40px;
                   vertical-align: middle;
                 }
               }
-              .scp-name{
+              .scp-name {
                 margin-left: 5px;
               }
             }
-            .scp-no{
-              padding:8px 0px 8px 8px ;
-
+            .scp-no {
+              padding: 8px 0px 8px 8px;
             }
           }
-          .scp-body1{
-            border-bottom: 1px solid #E2E2E2;
+          .scp-body1 {
+            border-bottom: 1px solid #e2e2e2;
           }
-
         }
-
       }
       .logonBtn {
         height: 40px;
@@ -355,7 +389,6 @@ export default {
       }
       .avatar-con {
         position: relative;
-        margin-right: 20px;
         height: 40px;
         width: 40px;
         .avatar {
@@ -381,15 +414,29 @@ export default {
     }
   }
   @media screen and (max-width: 1334px) {
-    .web-header-con {
-      width: 100%;
-    }
-  }
+    .web-header-con{
+      width: 1066px;
+      .whcl{
+        width: 676px;
+        h1{
+          width: 80px;
+          // margin-right: 10px;
+          transform: translateX(-40px);
+        }
+        .web-items{
+          display: 1;
+        }
+      }
+      .whcr{
+        .web-con-serch{
+          margin-right: 10px;
 
-  @media screen and (min-width: 1335px) {
-    .web-header-con {
-      width: 1334px;
+        }
+      }
+
     }
+
+  
   }
 }
 </style>
