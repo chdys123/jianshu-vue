@@ -162,6 +162,8 @@ export default {
       authorId: store.state.user._id,
       class:"0"
     });
+
+ 
     // 发布文章
     const submit = async () => {
       // 先判断标题和正文 和封面是否正确填写
@@ -372,6 +374,8 @@ export default {
       cgTips,
       draftId,
       articleId,
+     
+
     };
   },
 
@@ -405,7 +409,7 @@ export default {
       }
 
       if (aId || dId) {
-        this.article.title = res.data.title;
+        this.article.title = res.data.title
         this.article.content = res.data.content;
         this.article.coverType = res.data.coverType;
         this.article.coverImg = res.data.coverImg;

@@ -65,8 +65,9 @@
                   v-model="serachKey"
                   placeholder="搜索文章或者作者"
                   @input="getSerachData"
+                  @keydown="handerKeyDown($event)"
                 />
-                <i class="el-icon-search" @click="toSerach"></i>
+                <i class="el-icon-search" @click="toSerach" ></i>
               </div>
             </template>
             <template #content2>
@@ -78,9 +79,8 @@
                       v-for="item in serachData.article"
                       :key="item._id"
                       class="scp-art"
-                      @click="$router.push('/article?id=' + item._id)"
+                      @click="$router.push('/article?id=' + item._id)" v-html="item.title"
                     >
-                      {{ item.title }}
                     </div>
                     <div v-show="serachData.article.length == 0" class="scp-no">
                       未搜索到相关文章
@@ -99,7 +99,7 @@
                       <div class="scp-auth-imgcon">
                         <img :src="item.avatar" alt="" />
                       </div>
-                      <span class="scp-name">{{ item.username }}</span>
+                      <span class="scp-name" v-html="item.username"></span>
                     </div>
                     <div v-show="serachData.authod.length == 0" class="scp-no">
                       未搜索到相关作者
@@ -141,7 +141,7 @@
 </template>
 
 <script>
-import { ref, reactive, getCurrentInstance, watch } from "vue";
+import { ref, reactive, getCurrentInstance, watch, handleError } from "vue";
 import popover from "./popover2.vue";
 import { useRoute, useRouter } from "vue-router";
 
@@ -180,7 +180,7 @@ export default {
       if (timer) {
         clearTimeout(timer);
       }
-      if (!serachKey.value) {
+      if (!serachKey.value.trim()) {
         serachData.article = [];
         serachData.authod = [];
         return;
@@ -195,16 +195,42 @@ export default {
             },
           })
           .then((res) => {
+            res.article.forEach((item, index, arr) => {
+              arr[index].title=changeString(item.title,serachKey.value)
+            });
+            res.authod.forEach((item, index, arr) => {
+              arr[index].username=changeString(item.username,serachKey.value)
+            });
             serachData.article = res.article;
+
             serachData.authod = res.authod;
           });
       }, 1000);
     };
 
+    // 显示红字
+    const changeString = (str, key) => {
+      let result = str.replace(/&lt;/g, "<");
+      result = result.replace(/&gt;/g, ">");
+      let reg = new RegExp("(" + key + ")", "g");
+      result = result.replace(reg, ($0, $1) => {
+        return "<span style='color:red;' class='textDeco'>" + $1 + "</span>";
+      });
+
+      return result;
+    };
+
+    // 搜索框监听 按下enter
+    const handerKeyDown=(e)=>{
+      if(e.code=="Enter"&&serachKey.value.trim()){
+        toSerach()
+      }
+
+    }
+
     // 进入搜索页面
     const toSerach = () => {
-      console.log("点击了");
-      if (serachKey.value) {
+      if (serachKey.value.trim()) {
         router.push("/serach?key=" + serachKey.value);
       }
     };
@@ -218,6 +244,8 @@ export default {
       getSerachData,
       serachData,
       toSerach,
+      changeString,
+      handerKeyDown
     };
   },
   created() {},
@@ -414,29 +442,25 @@ export default {
     }
   }
   @media screen and (max-width: 1334px) {
-    .web-header-con{
+    .web-header-con {
       width: 1066px;
-      .whcl{
+      .whcl {
         width: 676px;
-        h1{
+        h1 {
           width: 80px;
           // margin-right: 10px;
           transform: translateX(-40px);
         }
-        .web-items{
+        .web-items {
           display: 1;
         }
       }
-      .whcr{
-        .web-con-serch{
+      .whcr {
+        .web-con-serch {
           margin-right: 10px;
-
         }
       }
-
     }
-
-  
   }
 }
 </style>

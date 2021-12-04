@@ -281,11 +281,14 @@ export default {
       });
     };
 
-    watch(()=>route.fullPath,(newData,oldData)=>{
-      if(route.path=="/article"){
-        getAllData(route.query.id);
+    watch(
+      () => route.fullPath,
+      (newData, oldData) => {
+        if (route.path == "/article") {
+          getAllData(route.query.id);
+        }
       }
-    })
+    );
 
     // 评论信息
     let comments = reactive([]);
@@ -318,6 +321,9 @@ export default {
     };
     // 对文章发布评论
     const addComment = () => {
+      if(!commentForArticle.value.trim()){
+        return 
+      }
       let comment = {
         username: user.username,
         userId: user._id,
@@ -368,6 +374,9 @@ export default {
     };
     // 发布对一级评论的回复
     const addComment2 = (arg, id) => {
+      if(!commentForComment.value.trim()){
+        return 
+      }
       proxy
         .http({
           method: "post",
@@ -697,11 +706,13 @@ export default {
 
   .web-content {
     position: relative;
-    // min-height: 1000px;
+    min-height: calc(100vh - 66px);
     width: 1066px;
     margin: 66px auto 0px;
     display: flex;
     justify-content: space-between;
+    // background-color: pink;
+    
     .fixed {
       position: fixed;
       top: 164px;
@@ -920,21 +931,15 @@ export default {
         }
       }
       .more-comment ::v-deep {
-        // height: 44px;
-        // background-color: #f8f8f8;
-        // display: flex;
-        // justify-content: center;
-        // align-items: center;
-        // color: #222222;
-        // font-size: 16px;
         margin-bottom: 100px;
 
         .el-pagination.is-background .el-pager li:not(.disabled).active {
           background-color: #ee4142;
-          color: white;
+          color: white !important;
         }
+
         .el-pagination.is-background .el-pager li:not(.disabled):hover {
-          color: #ee4142;
+          color: #606266;
         }
       }
     }

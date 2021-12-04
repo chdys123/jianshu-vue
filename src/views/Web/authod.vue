@@ -16,11 +16,11 @@
                 <span class="msg-wz">获赞</span>
               </div>
               <div class="msg-star" @click="clickFansOrCare(1)">
-                <span class="msg-sz">{{ author.fans.length }}</span>
+                <span class="msg-sz">{{ author.fans }}</span>
                 <span class="msg-wz">粉丝</span>
               </div>
               <div class="msg-star" @click="clickFansOrCare(2)">
-                <span class="msg-sz">{{ author.careId.length }}</span>
+                <span class="msg-sz">{{ author.careId }}</span>
                 <span class="msg-wz">关注</span>
               </div>
             </div>
@@ -74,87 +74,92 @@
         <!-- 展示内容 -->
         <div class="author-content">
           <!-- 用户写的文章 -->
-          <div v-show="articleOrLike == 0">
-            <div
-              v-for="item in article"
-              :key="item._id"
-              class="item"
-              :data-id="item._id"
-              @click="toArticle(item._id)"
-            >
-              <div class="item-left">
-                <span class="title">
-                  {{ item.title }}
-                </span>
-                <div class="zw" v-if="item.coverType == '无封面'"></div>
-                <div v-if="item.coverType == '四图'" class="img-con">
-                  <div>
-                    <img :src="item.coverImg[0]" />
-                  </div>
-                  <div>
-                    <img :src="item.coverImg[1]" />
-                  </div>
-                  <div>
-                    <img :src="item.coverImg[2]" />
-                  </div>
-                  <div>
-                    <img :src="item.coverImg[3]" />
-                  </div>
-                </div>
-                <div class="msg">
-                  <span>{{ item.author }}</span>
-                  <span> {{ item.comment }}条评论 </span>
-                  <span>
-                    {{ handlerTime(item.createTime) }}
+          <transition>
+            <div v-show="articleOrLike == 0">
+              <div
+                v-for="item in article"
+                :key="item._id"
+                class="item"
+                :data-id="item._id"
+                @click="toArticle(item._id)"
+              >
+                <div class="item-left">
+                  <span class="title">
+                    {{ item.title }}
                   </span>
+                  <div class="zw" v-if="item.coverType == '无封面'"></div>
+                  <div v-if="item.coverType == '四图'" class="img-con">
+                    <div>
+                      <img :src="item.coverImg[0]" />
+                    </div>
+                    <div>
+                      <img :src="item.coverImg[1]" />
+                    </div>
+                    <div>
+                      <img :src="item.coverImg[2]" />
+                    </div>
+                    <div>
+                      <img :src="item.coverImg[3]" />
+                    </div>
+                  </div>
+                  <div class="msg">
+                    <span>{{ item.author }}</span>
+                    <span> {{ item.comment }}条评论 </span>
+                    <span>
+                      {{ handlerTime(item.createTime) }}
+                    </span>
+                  </div>
                 </div>
-              </div>
-              <div v-if="item.coverType == '单图'" class="item-right">
-                <img :src="item.coverImg[0]" />
+                <div v-if="item.coverType == '单图'" class="item-right">
+                  <img :src="item.coverImg[0]" />
+                </div>
               </div>
             </div>
-          </div>
+          </transition>
+
           <!-- 用户收藏的文章 -->
-          <div v-show="articleOrLike == 1">
-            <div
-              v-for="item in articleLiked"
-              :key="item._id"
-              class="item"
-              :data-id="item._id"
-              @click="toArticle(item._id)"
-            >
-              <div class="item-left">
-                <span class="title">
-                  {{ item.title }}
-                </span>
-                <div class="zw" v-if="item.coverType == '无封面'"></div>
-                <div v-if="item.coverType == '四图'" class="img-con">
-                  <div>
-                    <img :src="item.coverImg[0]" />
-                  </div>
-                  <div>
-                    <img :src="item.coverImg[1]" />
-                  </div>
-                  <div>
-                    <img :src="item.coverImg[2]" />
-                  </div>
-                  <div>
-                    <img :src="item.coverImg[3]" />
-                  </div>
-                </div>
-                <div class="msg">
-                  <span>{{ item.author }}</span>
-                  <span> {{ item.comment }}条评论 </span>
-                  <span>
-                    {{ handlerTime(item.createTime) }}
+          <transition>
+            <div v-show="articleOrLike == 1">
+              <div
+                v-for="item in articleLiked"
+                :key="item._id"
+                class="item"
+                :data-id="item._id"
+                @click="toArticle(item._id)"
+              >
+                <div class="item-left">
+                  <span class="title">
+                    {{ item.title }}
                   </span>
+                  <div class="zw" v-if="item.coverType == '无封面'"></div>
+                  <div v-if="item.coverType == '四图'" class="img-con">
+                    <div>
+                      <img :src="item.coverImg[0]" />
+                    </div>
+                    <div>
+                      <img :src="item.coverImg[1]" />
+                    </div>
+                    <div>
+                      <img :src="item.coverImg[2]" />
+                    </div>
+                    <div>
+                      <img :src="item.coverImg[3]" />
+                    </div>
+                  </div>
+                  <div class="msg">
+                    <span>{{ item.author }}</span>
+                    <span> {{ item.comment }}条评论 </span>
+                    <span>
+                      {{ handlerTime(item.createTime) }}
+                    </span>
+                  </div>
                 </div>
-              </div>
-              <div v-if="item.coverType == '单图'" class="item-right">
-                <img :src="item.coverImg[0]" />
+                <div v-if="item.coverType == '单图'" class="item-right">
+                  <img :src="item.coverImg[0]" />
+                </div>
               </div>
             </div>
-          </div>
+          </transition>
         </div>
       </div>
       <div class="right-con">
@@ -177,12 +182,12 @@
           class="drawer-tabar-span"
           :class="{ 'drawer-tabar-active': drawerActive == 1 }"
           @click="clickDrawerFansOrCare(1)"
-          >粉丝{{ author.fans.length }}</span
+          >粉丝{{ author.fans }}</span
         >
         <span
           @click="clickDrawerFansOrCare(2)"
           :class="{ 'drawer-tabar-active': drawerActive == 2 }"
-          >关注{{ author.careId.length }}</span
+          >关注{{ author.careId }}</span
         >
       </div>
       <div class="drawer-body">
@@ -193,12 +198,12 @@
               :key="item.id"
               class="item-con"
             >
-              <div class="ImgCon">
+              <div class="ImgCon" @click="toAuthor(item.id)">
                 <img :src="item.avatar" />
               </div>
 
               <div class="fans-msg">
-                <span class="fans-name">{{ item.username }}</span>
+                <span class="fans-name" @click="toAuthor(item.id)">{{ item.username }}</span>
                 <span class="fans-fansCount">{{ item.fansCount }}粉丝</span>
               </div>
 
@@ -225,12 +230,12 @@
               :key="item.id"
               class="item-con"
             >
-              <div class="ImgCon">
+              <div class="ImgCon" @click="toAuthor(item.id)">
                 <img :src="item.avatar" />
               </div>
 
               <div class="fans-msg">
-                <span class="fans-name">{{ item.username }}</span>
+                <span class="fans-name" @click="toAuthor(item.id)">{{ item.username }}</span>
                 <span class="fans-fansCount">{{ item.fansCount }}粉丝</span>
               </div>
 
@@ -286,13 +291,20 @@ export default {
       });
     };
 
+    // 进入用户详情页面
+    const toAuthor = (id) => {
+      proxy.$router.push({
+        path: "/authod",
+        query: {
+          id: id,
+        },
+      });
+    };
+
     const { handlerTime1: handlerTime } = handlerTimefn();
 
     // 获取到的作者信息
-    let author = reactive({
-      fans: [],
-      careId: [],
-    });
+    let author = reactive({});
 
     // 文章或者收藏的flag
     let articleOrLike = ref(0);
@@ -377,9 +389,9 @@ export default {
           if (res.code == 200) {
             isCare.value = res.data;
             if (cate == 2) {
-              author.fans.length--;
+              author.fans--;
             } else {
-              author.fans.length++;
+              author.fans++;
             }
           } else {
             proxy.$message.error("服务器出现异常");
@@ -523,9 +535,9 @@ export default {
             // 如果当前用户与当前作者页面相同
             if (user._id == author._id) {
               if (cate == 1) {
-                author.careId.length++;
+                author.careId++;
               } else {
-                author.careId.length--;
+                author.careId--;
               }
             }
           } else {
@@ -576,6 +588,7 @@ export default {
       user,
       handlerTime,
       toArticle,
+      toAuthor,
       author,
       articleOrLike,
       clickAOrL,
