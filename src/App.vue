@@ -1,6 +1,6 @@
 <template>
   <!-- <transition> -->
-    <router-view></router-view>
+  <router-view></router-view>
   <!-- </transition> -->
 </template>
 
@@ -34,8 +34,6 @@ body {
   animation: test 1s linear;
 }
 
-
-
 @keyframes test {
   0% {
     opacity: 0;
@@ -44,4 +42,9 @@ body {
     opacity: 1;
   }
 }
+
+pre code{
+  color: white;
+}
+
 </style>

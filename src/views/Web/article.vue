@@ -37,7 +37,7 @@
             }}</span>
           </div>
           <!-- 文章内容 -->
-          <div v-html="article.content"></div>
+          <div v-html="article.content" class="article-content"></div>
         </div>
 
         <!-- 评论标题 -->
@@ -321,8 +321,8 @@ export default {
     };
     // 对文章发布评论
     const addComment = () => {
-      if(!commentForArticle.value.trim()){
-        return 
+      if (!commentForArticle.value.trim()) {
+        return;
       }
       let comment = {
         username: user.username,
@@ -374,8 +374,8 @@ export default {
     };
     // 发布对一级评论的回复
     const addComment2 = (arg, id) => {
-      if(!commentForComment.value.trim()){
-        return 
+      if (!commentForComment.value.trim()) {
+        return;
       }
       proxy
         .http({
@@ -699,7 +699,7 @@ export default {
 </script>
     
   <style scoped lang="less">
-.web-con {
+.web-con ::v-deep {
   overflow: hidden;
   background-color: #ffffff;
   min-width: 100vh;
@@ -712,7 +712,7 @@ export default {
     display: flex;
     justify-content: space-between;
     // background-color: pink;
-    
+
     .fixed {
       position: fixed;
       top: 164px;
@@ -762,6 +762,67 @@ export default {
           &:hover {
             color: #9a9a9a;
           }
+        }
+      }
+      .article-content {
+        white-space: pre-wrap;
+          word-break:break-all; 
+        line-height: 1.8;
+        img{
+          margin: 20px 0px;
+        }
+        // background-color: pink;
+        /* table 样式 */
+        table {
+          border-top: 1px solid #ccc;
+          border-left: 1px solid #ccc;
+        }
+        table td,
+        table th {
+          border-bottom: 1px solid #ccc;
+          border-right: 1px solid #ccc;
+          padding: 3px 5px;
+        }
+        table th {
+          border-bottom: 2px solid #ccc;
+          text-align: center;
+        }
+        /* blockquote 样式 */
+        blockquote {
+          display: block;
+          border-left: 8px solid #d0e5f2;
+          padding: 5px 10px;
+          margin: 10px 0;
+          line-height: 1.4;
+          font-size: 100%;
+          background-color: #f1f1f1;
+        }
+        /* code 样式 */
+        code {
+          display: inline-block;
+          *display: inline;
+          *zoom: 1;
+          background-color: #f1f1f1;
+          border-radius: 3px;
+          padding: 3px 5px;
+          margin: 0px 3px;
+          background-color: #282C34;
+
+          // background-color: pink;
+        }
+        pre{
+          margin: 20px 0px;
+          background-color: #282C34;
+
+        }
+        pre code {
+          display: block;
+          white-space: pre-wrap;
+          word-break:break-all; 
+        }
+        ul,
+        ol {
+          margin: 10px 0 10px 20px;
         }
       }
       .comment-title {
@@ -930,7 +991,7 @@ export default {
           }
         }
       }
-      .more-comment ::v-deep {
+      .more-comment {
         margin-bottom: 100px;
 
         .el-pagination.is-background .el-pager li:not(.disabled).active {

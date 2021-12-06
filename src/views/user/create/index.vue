@@ -144,6 +144,7 @@
 import Editor from "wangeditor";
 import { ref, reactive, getCurrentInstance, watchEffect, watch } from "vue";
 import { useStore } from "vuex";
+import hljs from 'highlight.js'
 export default {
   setup() {
     let { proxy } = getCurrentInstance();
@@ -440,6 +441,7 @@ export default {
       this.editor.data.config.zIndex = 1;
       // 设置提示文字
       this.editor.data.config.placeholder = "请输入正文";
+      this.editor.data.highlight = hljs
       this.editor.data.create();
       this.editor.data.txt.html(this.article.content);
     };
@@ -449,7 +451,7 @@ export default {
 </script>
   
 <style scoped lang="less">
-.create-con {
+.create-con ::v-deep{
   position: relative;
   width: 100%;
   .create-con1 {
@@ -517,12 +519,22 @@ export default {
       }
       #text-container {
         width: 100%;
+        // width: 820px;
         min-height: 600px;
+        pre code{
+          background-color: #282C34;
+          white-space: pre-wrap;
+          word-break:break-all; 
+        }
+        pre{
+          background-color: #282C34;
+
+        }
       }
       .create-footer-con{
         border-top: 1px solid #e8e8e8;
 
-        .create-footer ::v-deep {
+        .create-footer  {
         padding-top: 30px;
         min-height: 50px;
         display: flex;
