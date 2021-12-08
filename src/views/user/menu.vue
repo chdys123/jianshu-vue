@@ -56,7 +56,6 @@
     </div>
   </div>
 </template>
-
 <script>
 import { ref, reactive, getCurrentInstance } from "vue";
 export default {

@@ -80,7 +80,7 @@
                 <div class="name" @click="toUserMainPage(item.userId)">
                   {{ item.username }}
                 </div>
-                <div class="star">{{ item.star }}</div>
+                <!-- <div class="star">{{ item.star }}</div> -->
               </div>
               <!-- 评论内容 -->
               <div class="item-right-content">
@@ -1029,6 +1029,8 @@ export default {
           margin: 8px 0px 4px;
         }
         .r-c-a-m-desc {
+          text-align: center;
+          // background-color: pink;
           font-size: 14px;
           width: 240px;
           color: #707070;

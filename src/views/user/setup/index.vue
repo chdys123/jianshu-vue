@@ -193,7 +193,7 @@ export default {
           params: form.data,
         })
         .then((res) => {
-          console.log(res);
+          console.log(res)
           if (res.code == 200) {
             proxy.$message.success("个人信息修改成功");
             proxy.$store.commit(

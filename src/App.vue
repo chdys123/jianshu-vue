@@ -5,9 +5,13 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { provide } from "vue";
+import * as echarts from 'echarts'
 export default {
   name: "app",
+  setup(){
+    provide('ec',echarts)
+  },
   mounted() {
     console.log("启动了");
   },
@@ -43,8 +47,7 @@ body {
   }
 }
 
-pre code{
+pre code {
   color: white;
 }
-
 </style>

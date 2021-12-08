@@ -26,6 +26,7 @@ export default {
       // 跳转到登录页面
       proxy.$router.push("/login");
     };
+
     return {
       quit,
     };
@@ -33,6 +34,7 @@ export default {
  
   created() {
     let user=JSON.parse(localStorage.user)
+    document.title=user.username+"的创作平台"
     this.$store.commit("updateUser", user);
     
   },

@@ -19,53 +19,58 @@
     <div class="m-a-c-body">
       <div class="work-con" v-show="isWork">
         <div class="work-c-h">
-          <span
-            class="work-c-item"
-            @click="getWork(0)"
-            :class="{ itemActive: itemIndex == 0 }"
-            >全部</span
-          >
-          <span
-            class="work-c-item"
-            @click="getWork(1)"
-            :class="{ itemActive: itemIndex == 1 }"
-            >已发布</span
-          >
-          <span
-            class="work-c-item"
-            @click="getWork(2)"
-            :class="{ itemActive: itemIndex == 2 }"
-            >审核中</span
-          >
-          <span
-            class="work-c-item"
-            @click="getWork(3)"
-            :class="{ itemActive: itemIndex == 3 }"
-            >未通过</span
-          >
-          <span
-            class="work-c-item"
-            @click="getWork(4)"
-            :class="{ itemActive: itemIndex == 4 }"
-            >仅我可见</span
-          >
-          <el-date-picker
-            v-model="workDate"
-            type="daterange"
-            range-separator="~"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            @change="getWork(itemIndex)"
-          >
-          </el-date-picker>
-          <div class="work-c-serch-c">
-            <input
-              type="text"
-              v-model="keyWord"
-              class="work-c-serch"
-              placeholder="请输入关键字"
-            />
-            <i class="el-icon-search" @click="getWork(itemIndex)"></i>
+          <div class="work-c-h-item-con1">
+            <span
+              class="work-c-item"
+              @click="getWork(0)"
+              :class="{ itemActive: itemIndex == 0 }"
+              >全部</span
+            >
+            <span
+              class="work-c-item"
+              @click="getWork(1)"
+              :class="{ itemActive: itemIndex == 1 }"
+              >已发布</span
+            >
+            <span
+              class="work-c-item"
+              @click="getWork(2)"
+              :class="{ itemActive: itemIndex == 2 }"
+              >审核中</span
+            >
+            <span
+              class="work-c-item"
+              @click="getWork(3)"
+              :class="{ itemActive: itemIndex == 3 }"
+              >未通过</span
+            >
+            <span
+              class="work-c-item"
+              @click="getWork(4)"
+              :class="{ itemActive: itemIndex == 4 }"
+              >仅我可见</span
+            >
+          </div>
+
+          <div class="work-c-h-item-con2">
+            <el-date-picker
+              v-model="workDate"
+              type="daterange"
+              range-separator="~"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              @change="getWork(itemIndex)"
+            >
+            </el-date-picker>
+            <div class="work-c-serch-c">
+              <input
+                type="text"
+                v-model="keyWord"
+                class="work-c-serch"
+                placeholder="请输入关键字"
+              />
+              <i class="el-icon-search" @click="getWork(itemIndex)"></i>
+            </div>
           </div>
         </div>
         <div class="work-total">共{{ Article.data.length }}条内容</div>
@@ -79,32 +84,50 @@
           </div>
           <div class="work-item-msg">
             <div class="work-msg1">
-              <div class="work-item-title">{{ item.title }}</div>
+              <div
+                class="work-item-title"
+                @click="$router.push('/article?id=' + item._id)"
+              >
+                {{ item.title }}
+              </div>
               <div class="work-item-time">
                 {{ handlerTime(item.createTime) }}
               </div>
             </div>
 
             <div class="work-msg2">
-              <span :class="{ 'work-msg21': item.statu == '未通过'||item.statu=='审核中' }">{{
-                item.statu
-              }}</span>
+              <span
+                :class="{
+                  'work-msg21':
+                    item.statu == '未通过' || item.statu == '审核中',
+                }"
+                >{{ item.statu }}</span
+              >
             </div>
             <div
               class="work-msg3"
-              :class="{ 'work-msg31': item.statu == '未通过'||item.statu=='审核中' }"
+              :class="{
+                'work-msg31': item.statu == '未通过' || item.statu == '审核中',
+              }"
             >
-              <div class="work-data" v-if="item.statu !== '未通过'&&item.statu!=='审核中'">
-                <span>阅读</span>
-                <span>点赞</span>
-                <span>评论</span>
+              <div
+                class="work-data"
+                v-if="item.statu !== '未通过' && item.statu !== '审核中'"
+              >
+                <span>阅读&nbsp;{{ item.read }}</span>
+                <span>点赞&nbsp;{{ item.star }}</span>
+                <span>评论&nbsp;{{ item.comment }}</span>
               </div>
 
               <div class="work-manager">
-                <span v-if="item.statu !== '未通过'&&item.statu!=='审核中'" class="work-manager-item"
+                <span
+                  v-if="item.statu !== '未通过' && item.statu !== '审核中'"
+                  class="work-manager-item"
                   >查看数据</span
                 >
-                <span v-if="item.statu !== '未通过'&&item.statu!=='审核中'" class="work-manager-item"
+                <span
+                  v-if="item.statu !== '未通过' && item.statu !== '审核中'"
+                  class="work-manager-item"
                   >查看评论</span
                 >
                 <span
@@ -114,16 +137,28 @@
                 >
                 <span
                   class="work-manager-item"
-                  v-if="item.statu == '未通过'||item.statu=='审核中'"
+                  v-if="item.statu == '未通过' || item.statu == '审核中'"
                   @click="delArticle(item._id, index)"
                   >删除作品</span
                 >
-                <popover v-if="item.statu !== '未通过'&&item.statu!=='审核中'">
+                <popover
+                  v-if="item.statu !== '未通过' && item.statu !== '审核中'"
+                >
                   <template #content>
                     <div class="work-manager-more">
-                      <div @click="setStatu(item._id,'仅我可见',index)" v-if="item.statu!=='仅我可见'">仅我可见</div>
-                      <div @click="setStatu(item._id,'已发布',index)"  v-if="item.statu=='仅我可见'">设为公开</div>
-                      <div @click="delArticle(item._id,index)">删除作品</div>
+                      <div
+                        @click="setStatu(item._id, '仅我可见', index)"
+                        v-if="item.statu !== '仅我可见'"
+                      >
+                        仅我可见
+                      </div>
+                      <div
+                        @click="setStatu(item._id, '已发布', index)"
+                        v-if="item.statu == '仅我可见'"
+                      >
+                        设为公开
+                      </div>
+                      <div @click="delArticle(item._id, index)">删除作品</div>
                     </div>
                   </template>
                   <template #reference>
@@ -406,27 +441,28 @@ export default {
         });
     };
     // 设置文章仅我可见
-    const setStatu=(id,value,index)=>{
-      proxy.http({
-        method:'post',
-        path:'/article/setStatu',
-        params:{
-          id,
-          statu:value
-        }
-      }).then(res=>{
-        if(res.code==200){
-          proxy.$message.success("设置成功")
-          // Article.data[index].statu=value
-          // 然后重新获取数据
-          getWork(itemIndex.value)
+    const setStatu = (id, value, index) => {
+      proxy
+        .http({
+          method: "post",
+          path: "/article/setStatu",
+          params: {
+            id,
+            statu: value,
+          },
+        })
+        .then((res) => {
+          if (res.code == 200) {
+            proxy.$message.success("设置成功");
+            // Article.data[index].statu=value
+            // 然后重新获取数据
+            getWork(itemIndex.value);
+          } else {
+            proxy.$message.error("设置出现异常");
+          }
+        });
+    };
 
-        }else{
-          proxy.$message.error("设置出现异常")
-        }
-      })
-    }
-    
     return {
       isWork,
       itemIndex,
@@ -442,7 +478,7 @@ export default {
       delDraft,
       getDraftByTime,
       delArticle,
-      setStatu
+      setStatu,
     };
   },
 };
@@ -516,49 +552,61 @@ export default {
         color: #222222;
         display: flex;
         justify-content: space-between;
-        .work-c-item {
-          cursor: pointer;
-        }
-        .itemActive {
-          color: #ff373c;
-        }
-        .work-c-serch-c {
+        .work-c-h-item-con1 {
+          display: flex;
+          // min-width: 300px;
           // background-color: pink;
-          padding: 0px 10px 0px 10px;
-          line-height: normal;
-          box-sizing: border-box;
-          height: 32px;
-          border: 1px solid #dcdfe6;
-          border-radius: 4px;
-          .work-c-serch {
-            outline: none;
-            height: 30px;
-            width: 100px;
-            margin-right: 10px;
-            border: 0;
-            &::-webkit-input-placeholder {
-              color: #c0c9db;
-            }
-            &::-moz-placeholder {
-              /* Mozilla Firefox 19+ */
-              color: #c0c9db;
-            }
-            &:-moz-placeholder {
-              /* Mozilla Firefox 4 to 18 */
-              color: #c0c9db;
-            }
-            &:-ms-input-placeholder {
-              /* Internet Explorer 10-11 */
-              color: #c0c9db;
-            }
-          }
-
-          .el-icon-search {
-            color: #bfbfbf;
+          .work-c-item {
             cursor: pointer;
+            margin-right: 20px;
+            
           }
-          .el-icon-search:hover {
-            color: #666666;
+          .itemActive {
+            color: #ff373c;
+          }
+        }
+        .work-c-h-item-con2 {
+          display: flex;
+          // background-color: yellow;
+          .work-c-serch-c {
+            // background-color: pink;
+            margin-left: 20px;
+            padding: 0px 10px 0px 10px;
+            line-height: normal;
+            box-sizing: border-box;
+            height: 32px;
+            border: 1px solid #dcdfe6;
+            border-radius: 4px;
+            .work-c-serch {
+              outline: none;
+              height: 30px;
+              width: 100px;
+              margin-right: 10px;
+              border: 0;
+              &::-webkit-input-placeholder {
+                color: #c0c9db;
+              }
+              &::-moz-placeholder {
+                /* Mozilla Firefox 19+ */
+                color: #c0c9db;
+              }
+              &:-moz-placeholder {
+                /* Mozilla Firefox 4 to 18 */
+                color: #c0c9db;
+              }
+              &:-ms-input-placeholder {
+                /* Internet Explorer 10-11 */
+                color: #c0c9db;
+              }
+            }
+
+            .el-icon-search {
+              color: #bfbfbf;
+              cursor: pointer;
+            }
+            .el-icon-search:hover {
+              color: #666666;
+            }
           }
         }
       }
@@ -603,6 +651,9 @@ export default {
               font-size: 16px;
               color: #222222;
               cursor: pointer;
+              &:hover {
+                color: red;
+              }
             }
             .work-item-time {
               font-size: 14px;
@@ -647,10 +698,10 @@ export default {
               .work-manager-more {
                 font-size: 14px;
                 // background-color: pink;
-                div{
+                div {
                   padding: 10px 20px;
-                  &:hover{
-                    background-color: #F5F5F5;
+                  &:hover {
+                    background-color: #f5f5f5;
                   }
                 }
               }
