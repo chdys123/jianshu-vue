@@ -130,7 +130,7 @@
                 </div>
                 <div @click="$router.push('/user/menu/mainPage')">创作平台</div>
                 <div>我的收藏</div>
-                <div>退出登录</div>
+                <div @click="signOut">退出登录</div>
               </div>
             </template>
           </popover>
@@ -235,6 +235,15 @@ export default {
       }
     };
 
+    // 点击退出登录
+    const signOut=()=>{
+      console.log("点击了退出登录")
+      // 清除本地的token和user
+      localStorage.clear()
+      // 然后到登录页面
+      router.push("/login")
+    }
+
     return {
       activeItem,
       getData,
@@ -245,7 +254,8 @@ export default {
       serachData,
       toSerach,
       changeString,
-      handerKeyDown
+      handerKeyDown,
+      signOut
     };
   },
   created() {},

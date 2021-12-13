@@ -6,11 +6,11 @@
 
 <script>
 import { provide } from "vue";
-import * as echarts from 'echarts'
+import * as echarts from "echarts";
 export default {
   name: "app",
-  setup(){
-    provide('ec',echarts)
+  setup() {
+    provide("ec", echarts);
   },
   mounted() {
     console.log("启动了");
@@ -25,9 +25,9 @@ export default {
 }
 html,
 body {
-  scroll-behavior: smooth;
   height: 100%;
   background-color: #f8f8f8;
+  scroll-behavior: smooth;
 }
 
 #app {

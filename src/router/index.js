@@ -130,7 +130,7 @@ router.beforeEach((to, from) => {
         return true
     } else {
         // 没有登录
-        if (to.name == "Web" || to.name == "article" || to.name == "authod" || to.name == "Login") {
+        if (to.name == "Login") {
             return true
         } else {
             // 重定向到登录页面

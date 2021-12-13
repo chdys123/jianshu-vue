@@ -233,8 +233,10 @@
           </div>
         </div>
       </div>
+
     </div>
   </div>
+  <el-backtop></el-backtop>
 </template>
     
     
@@ -699,12 +701,13 @@ export default {
 </script>
     
   <style scoped lang="less">
-.web-con ::v-deep {
+.web-con  {
+
   overflow: hidden;
   background-color: #ffffff;
   min-width: 100vh;
 
-  .web-content {
+  .web-content ::v-deep{
     position: relative;
     min-height: calc(100vh - 66px);
     width: 1066px;

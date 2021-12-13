@@ -68,7 +68,7 @@ export default {
             // 存vuex
             proxy.$store.commit("updateUser", res.user);
 
-            proxy.$router.push("/user/menu/mainPage");
+            proxy.$router.push("/");
           } else if (res.code == 300) {
             proxy.$message.error("用户名或密码错误");
             // console.log("用户名或密码错误")

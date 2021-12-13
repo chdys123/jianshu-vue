@@ -1,7 +1,6 @@
 <template>
   <div class="web-con">
     <web-header></web-header>
-
     <div class="web-content">
       <div class="left-con">
         <div class="author-msg">
@@ -259,6 +258,8 @@
       </div>
     </el-drawer>
   </div>
+  <el-backtop></el-backtop>
+
 </template>
     
   <script>
@@ -622,6 +623,7 @@ export default {
 .web-con {
   overflow: hidden;
   background-color: #ffffff;
+
   // min-width: 1000px;
 
   .web-content {
