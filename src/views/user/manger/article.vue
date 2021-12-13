@@ -348,13 +348,13 @@ export default {
     // 进入编辑页面
     const toCreate = (id1, id2) => {
       if (id1) {
-        let routeUrl = proxy.$router.resolve({
+        proxy.$router.push({
           path: "/user/create",
           query: {
             draftId: id1,
           },
         });
-        window.open(routeUrl.href, "_blank");
+        // window.open(routeUrl.href, "_blank");
       }
       if (id2) {
         let routeUrl = proxy.$router.resolve({

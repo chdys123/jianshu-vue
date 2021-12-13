@@ -10,8 +10,8 @@ const routes = [
         path: "",
         name: "index",
         component: () => import("../views/Web/index.vue"),
-        meta:{
-            title:"简书"
+        meta: {
+            title: "简书"
         }
     },
     // 文章详情
@@ -19,8 +19,8 @@ const routes = [
         path: '/article',
         name: "article",
         component: () => import("../views/Web/article.vue"),
-        meta:{
-            title:"文章详情"
+        meta: {
+            title: "文章详情"
         }
 
     },
@@ -29,15 +29,15 @@ const routes = [
         path: '/authod',
         name: "authod",
         component: () => import("../views/Web/authod.vue"),
-        meta:{
-            title:"作者主页"
+        meta: {
+            title: "作者主页"
         }
     },
     // 搜索页面
     {
-        path:"/serach",
-        name:"serach",
-        component:()=>import("../views/Web/serach.vue")
+        path: "/serach",
+        name: "serach",
+        component: () => import("../views/Web/serach.vue")
 
     },
 
@@ -124,28 +124,27 @@ const router = createRouter({
 router.beforeEach((to, from) => {
     // 返回 false 以取消导航
     // document.title=to.matched[0].meta.title
-   
 
     // 如果登录
-    if(localStorage.user){
+    if (localStorage.user) {
         return true
-    }else{
+    } else {
         // 没有登录
-        if(to.name=="Web"||to.name=="article"||to.name=="authod"||to.name=="Login"){
+        if (to.name == "Web" || to.name == "article" || to.name == "authod" || to.name == "Login") {
             return true
-        }else{
+        } else {
             // 重定向到登录页面
             return {
-                path:"/login"
+                path: "/login"
             }
         }
     }
-  })
+})
 
 
-  router.afterEach((to, from) => {
+router.afterEach((to, from) => {
 
-    window.scrollTo(0,0)
-  })
+    window.scrollTo(0, 0)
+})
 
 export default router
