@@ -17,7 +17,7 @@
           <span class="label">用户头像</span>
           <span class="content">
             <el-upload
-              action="http://localhost:3000/upload/img"
+              action="http://139.155.71.189:3000/upload/img"
               name="myfile"
               :headers="uploaderHeader"
               :on-success="onSuccess"

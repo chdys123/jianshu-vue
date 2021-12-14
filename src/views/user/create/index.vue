@@ -30,7 +30,7 @@
               <div class="create-upload">
                 <el-upload
                   class="avatar-uploader"
-                  action="http://localhost:3000/upload/img"
+                  action="http://139.155.71.189:3000/upload/img"
                   :headers="uploaderHeader"
                   :show-file-list="false"
                   name="myfile"
@@ -50,7 +50,7 @@
 
                 <el-upload
                   class="avatar-uploader"
-                  action="http://localhost:3000/upload/img"
+                  action="http://139.155.71.189:3000/upload/img"
                   :headers="uploaderHeader"
                   :show-file-list="false"
                   name="myfile"
@@ -68,7 +68,7 @@
 
                 <el-upload
                   class="avatar-uploader"
-                  action="http://localhost:3000/upload/img"
+                  action="http://139.155.71.189:3000/upload/img"
                   :headers="uploaderHeader"
                   :show-file-list="false"
                   name="myfile"
@@ -85,7 +85,7 @@
                 </el-upload>
                 <el-upload
                   class="avatar-uploader"
-                  action="http://localhost:3000/upload/img"
+                  action="http://139.155.71.189:3000/upload/img"
                   :headers="uploaderHeader"
                   :show-file-list="false"
                   name="myfile"
@@ -421,7 +421,7 @@ export default {
       this.editor.data = new Editor("#toolbar-container", "#text-container");
       // 配置上传图片接口地址
       this.editor.data.config.uploadImgServer =
-        "http://localhost:3000/upload/editor/img";
+        "http://139.155.71.189:3000/upload/editor/img";
       // 图片字段名
       this.editor.data.config.uploadFileName = "editorFile";
       // 图片请求头

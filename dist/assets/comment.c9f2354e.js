@@ -1,0 +1,1 @@
+import{_ as r}from"./index.936426dd.js";import{V as o,o as s}from"./vendor.c07be6c4.js";const e={class:"m-c-con"};var n=r({},[["render",function(r,n,a,c,d,t){return s(),o("div",e," 评论管理 ")}]]);export{n as default};

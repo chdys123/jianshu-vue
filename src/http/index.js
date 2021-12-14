@@ -4,7 +4,8 @@ import axios from "axios"
 
 // axios实例
 let instance = axios.create({
-    baseURL: "http://localhost:3000",
+    // baseURL: "http://localhost:3000",
+    baseURL: "http://139.155.71.189:3000",
     timeout: 5000,
 })
 
