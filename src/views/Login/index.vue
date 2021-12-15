@@ -26,8 +26,15 @@
             type="primary"
             class="login-btn"
             @click="login"
-            :disabled="isReg"
+            v-show="!isReg"
             >登录</el-button
+          >
+          <el-button
+            type="primary"
+            class="login-btn"
+            @click="tologin"
+            v-show="isReg"
+            >返回登录</el-button
           >
           <el-button class="regist-btn" @click="reg">注册</el-button>
         </el-form-item>
@@ -48,34 +55,39 @@ export default {
 
     // 点击登录按钮
     function login() {
-      // 把登录信息发送给后台
-      proxy
-        .http({
-          method: "post",
-          path: "/login",
-          params: user,
-        })
-        .then((res) => {
-          console.log(res);
-          // 判断code
-          if (res.code == 200) {
-            proxy.$message.success("登录成功");
+      // 判断是否为空
+      if (user.username && user.pwd) {
+        // 把登录信息发送给后台
+        proxy
+          .http({
+            method: "post",
+            path: "/login",
+            params: user,
+          })
+          .then((res) => {
+            console.log(res);
+            // 判断code
+            if (res.code == 200) {
+              proxy.$message.success("登录成功");
 
-            // 登录成功之后 保存token。在localStorage
-            localStorage.setItem("token", res.token);
-            // 把用户信息存localStorage
-            localStorage.setItem("user", JSON.stringify(res.user));
-            // 存vuex
-            proxy.$store.commit("updateUser", res.user);
+              // 登录成功之后 保存token。在localStorage
+              localStorage.setItem("token", res.token);
+              // 把用户信息存localStorage
+              localStorage.setItem("user", JSON.stringify(res.user));
+              // 存vuex
+              proxy.$store.commit("updateUser", res.user);
 
-            proxy.$router.push("/");
-          } else if (res.code == 300) {
-            proxy.$message.error("用户名或密码错误");
-            // console.log("用户名或密码错误")
-          } else {
-            proxy.$message.error("服务器出现异常，请稍后再试");
-          }
-        });
+              proxy.$router.push("/");
+            } else if (res.code == 300) {
+              proxy.$message.error("用户名或密码错误");
+              // console.log("用户名或密码错误")
+            } else {
+              proxy.$message.error("服务器出现异常，请稍后再试");
+            }
+          });
+      } else {
+        proxy.$message.error("用户名和密码不能为空");
+      }
     }
     // 是否处于注册
     let isReg = ref(false);
@@ -115,11 +127,18 @@ export default {
         }
       }
     }
+    // 点击返回登录
+    function tologin() {
+      isReg.value = false;
+      user.username = null;
+      user.pwd = null;
+    }
     return {
       user,
       login,
       reg,
       isReg,
+      tologin,
     };
   },
 };
