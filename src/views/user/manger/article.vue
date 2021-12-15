@@ -121,16 +121,6 @@
 
               <div class="work-manager">
                 <span
-                  v-if="item.statu !== '未通过' && item.statu !== '审核中'"
-                  class="work-manager-item"
-                  >查看数据</span
-                >
-                <span
-                  v-if="item.statu !== '未通过' && item.statu !== '审核中'"
-                  class="work-manager-item"
-                  >查看评论</span
-                >
-                <span
                   @click="toCreate(null, item._id)"
                   class="work-manager-item"
                   >修改</span

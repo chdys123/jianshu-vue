@@ -1,9 +1,9 @@
 <template>
   <div class="web-header">
     <div class="web-header-con">
-      <div class="whcl">
-        <h1>简书</h1>
+      <h1>简书</h1>
 
+      <div class="whcl">
         <div class="web-items">
           <span
             class="web-item"
@@ -67,7 +67,7 @@
                   @input="getSerachData"
                   @keydown="handerKeyDown($event)"
                 />
-                <i class="el-icon-search" @click="toSerach" ></i>
+                <i class="el-icon-search" @click="toSerach"></i>
               </div>
             </template>
             <template #content2>
@@ -79,9 +79,9 @@
                       v-for="item in serachData.article"
                       :key="item._id"
                       class="scp-art"
-                      @click="$router.push('/article?id=' + item._id)" v-html="item.title"
-                    >
-                    </div>
+                      @click="$router.push('/article?id=' + item._id)"
+                      v-html="item.title"
+                    ></div>
                     <div v-show="serachData.article.length == 0" class="scp-no">
                       未搜索到相关文章
                     </div>
@@ -111,13 +111,6 @@
           </popover>
         </div>
 
-        <button
-          class="logonBtn"
-          v-if="!isLogin"
-          @click="$router.push('/login')"
-        >
-          登录
-        </button>
         <div v-if="isLogin" class="avatar-con">
           <popover>
             <template #content1>
@@ -128,8 +121,9 @@
                 <div @click="$router.push('/authod?id=' + user._id)">
                   个人主页
                 </div>
-                <div @click="$router.push('/user/menu/mainPage')">创作平台</div>
-                <div>我的收藏</div>
+                <div @click="$router.push('/user/menu/manger/article')">
+                  创作平台
+                </div>
                 <div @click="signOut">退出登录</div>
               </div>
             </template>
@@ -196,10 +190,13 @@ export default {
           })
           .then((res) => {
             res.article.forEach((item, index, arr) => {
-              arr[index].title=changeString(item.title,serachKey.value)
+              arr[index].title = changeString(item.title, serachKey.value);
             });
             res.authod.forEach((item, index, arr) => {
-              arr[index].username=changeString(item.username,serachKey.value)
+              arr[index].username = changeString(
+                item.username,
+                serachKey.value
+              );
             });
             serachData.article = res.article;
 
@@ -221,12 +218,11 @@ export default {
     };
 
     // 搜索框监听 按下enter
-    const handerKeyDown=(e)=>{
-      if(e.code=="Enter"&&serachKey.value.trim()){
-        toSerach()
+    const handerKeyDown = (e) => {
+      if (e.code == "Enter" && serachKey.value.trim()) {
+        toSerach();
       }
-
-    }
+    };
 
     // 进入搜索页面
     const toSerach = () => {
@@ -236,13 +232,13 @@ export default {
     };
 
     // 点击退出登录
-    const signOut=()=>{
-      console.log("点击了退出登录")
+    const signOut = () => {
+      console.log("点击了退出登录");
       // 清除本地的token和user
-      localStorage.clear()
+      localStorage.clear();
       // 然后到登录页面
-      router.push("/login")
-    }
+      router.push("/login");
+    };
 
     return {
       activeItem,
@@ -255,7 +251,7 @@ export default {
       toSerach,
       changeString,
       handerKeyDown,
-      signOut
+      signOut,
     };
   },
   created() {},
@@ -271,35 +267,30 @@ export default {
   width: 100%;
   background-color: #ffffff;
   z-index: 9;
-  min-width: 1106px;
+  min-width: 1241px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
   .web-header-con {
+    position: relative;
     height: 66px;
     box-sizing: border-box;
     vertical-align: middle;
     display: flex;
     align-items: center;
-    // justify-content: space-between;
     margin: 0 auto;
-    width: 1334px;
-
-    // background-color: skyblue;
+    width: 1066px;
+    h1 {
+      position: absolute;
+      color: #ee4142;
+      width: 100px;
+      text-align: center;
+      transform: translate(-100%);
+    }
     .whcl {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      // width: 676px;
-
-      // background-color: pink;
-      margin-right: 70px;
-      h1 {
-        color: #ee4142;
-        width: 134px;
-        // background-color: yellow;
-        text-align: center;
-      }
+      width: 676px;
       .web-items {
-        // background-color: pink;
         width: 676px;
         display: flex;
         justify-content: space-between;
@@ -320,38 +311,33 @@ export default {
       }
     }
     .whcr {
+      position: relative;
       display: flex;
-      align-items: center;
       flex: 1;
-      // background-color: red;
-
+      align-items: center;
+      margin-left: 72px;
       .web-con-serch {
         background-color: #f5f5f5;
-        // background: pink;
         height: 40px;
         padding: 0px 18px;
         flex: 1;
         border-radius: 5px;
         vertical-align: middle;
-        margin-right: 30px;
         .wcs-con {
           width: 100%;
           display: flex;
           align-items: center;
           justify-content: space-between;
-          // background:yellow;
           input {
             flex: 1;
             height: 40px;
             border: none;
             background-color: #f5f5f5;
-            // background-color: pink;
             outline: none;
             margin-right: 18px;
             font-size: 18px;
           }
           .el-icon-search {
-            // background-color: blue;
             color: #ee4142;
             font-size: 20px;
             font-weight: 700;
@@ -364,7 +350,6 @@ export default {
         box-sizing: border-box;
         padding: 10px;
         font-size: 14px;
-        // background-color: pink;
         .scp-item {
           display: flex;
           .scp-label {
@@ -372,10 +357,8 @@ export default {
           }
           .scp-body {
             flex: 1;
-
             margin-left: 20px;
             border-left: 1px solid #e2e2e2;
-
             .scp-art,
             .scp-auth {
               padding: 8px 0px 8px 8px;
@@ -411,22 +394,11 @@ export default {
           }
         }
       }
-      .logonBtn {
-        height: 40px;
-        font-size: 16px;
-        padding: 8px 16px;
-        outline: none;
-        background-color: #f04142;
-        border: none;
-        color: white;
-        font-weight: 500;
-        border-radius: 5px;
-        &:hover {
-          background-color: #f25455;
-        }
-      }
+     
       .avatar-con {
-        position: relative;
+        position: absolute;
+        right: 0;
+        transform: translate(70px);
         height: 40px;
         width: 40px;
         .avatar {
@@ -451,26 +423,6 @@ export default {
       }
     }
   }
-  @media screen and (max-width: 1334px) {
-    .web-header-con {
-      width: 1066px;
-      .whcl {
-        width: 676px;
-        h1 {
-          width: 80px;
-          // margin-right: 10px;
-          transform: translateX(-40px);
-        }
-        .web-items {
-          display: 1;
-        }
-      }
-      .whcr {
-        .web-con-serch {
-          margin-right: 10px;
-        }
-      }
-    }
-  }
+
 }
 </style>

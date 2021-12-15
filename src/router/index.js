@@ -3,8 +3,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 // 没有登录不能访问到后台界面。需要配置路由守卫。
 
 const routes = [
-
-
     // 文章列表页面
     {
         path: "",
@@ -38,9 +36,7 @@ const routes = [
         path: "/serach",
         name: "serach",
         component: () => import("../views/Web/serach.vue")
-
     },
-
     // 普通用户后台
     {
         path: "/user",
@@ -53,29 +49,11 @@ const routes = [
                 name: "menu",
                 component: () => import("../views/user/menu.vue"),
                 children: [
-                    {
-                        path: "mainPage",
-                        name: "mainPage",
-                        component: () => import("../views/user/mainPage/index.vue")
-                    },
-
                     // 作品管理
                     {
                         path: "manger/article",
                         name: "mangerArticle",
                         component: () => import("../views/user/manger/article.vue"),
-                    },
-                    // 评论管理
-                    {
-                        path: "manger/comment",
-                        name: "mangerComment",
-                        component: () => import("../views/user/manger/comment.vue")
-                    },
-                    // 作品数据
-                    {
-                        path: "data/article",
-                        name: "dataArticle",
-                        component: () => import("../views/user/data/article.vue")
                     },
                     // 粉丝数据
                     {
@@ -90,7 +68,6 @@ const routes = [
                         component: () => import("../views/user/setup/index.vue")
                     },
                 ]
-
             },
             // 创作
             {
@@ -98,13 +75,7 @@ const routes = [
                 name: "create",
                 component: () => import("../views/user/create/index.vue")
             },
-
-
         ]
-    },
-    // 管理员路由
-    {
-
     },
     // 登录与注册
     {

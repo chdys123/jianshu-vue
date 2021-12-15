@@ -86,28 +86,33 @@ export default {
         user.username = null;
         user.pwd = null;
       } else {
-        // 就发送http请求
-        proxy
-          .http({
-            method: "post",
-            path: "/reg",
-            params: {
-              username: user.username,
-              pwd: user.pwd,
-            },
-          })
-          .then((res) => {
-            if (res.code == 200) {
-              proxy.$message.success("注册成功");
-              isReg.value=false
-            } else if (res.code == 400) {
-              proxy.$message.error("用户名已经存在");
-            } else if (res.code == 300) {
-              proxy.$message.error("注册失败");
-            } else {
-              proxy.$message.error("服务器出现异常");
-            }
-          });
+        // 先判断是否为空
+        if (user.username && user.pwd) {
+          // 就发送http请求
+          proxy
+            .http({
+              method: "post",
+              path: "/reg",
+              params: {
+                username: user.username,
+                pwd: user.pwd,
+              },
+            })
+            .then((res) => {
+              if (res.code == 200) {
+                proxy.$message.success("注册成功");
+                isReg.value = false;
+              } else if (res.code == 400) {
+                proxy.$message.error("用户名已经存在");
+              } else if (res.code == 300) {
+                proxy.$message.error("注册失败");
+              } else {
+                proxy.$message.error("服务器出现异常");
+              }
+            });
+        } else {
+          proxy.$message.error("用户名和密码不能为空");
+        }
       }
     }
     return {

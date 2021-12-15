@@ -9,40 +9,22 @@
         router
         :collapse="isCollapse"
       >
-        <el-menu-item index="/user/menu/mainPage">
-          <i class="el-icon-magic-stick"></i>
-          <span class="home-menu-title">主页</span>
+        <el-menu-item index="/user/menu/manger/article">
+          <i class="el-icon-notebook-2"></i>
+          <span class="home-menu-title">作品</span>
         </el-menu-item>
-        <el-menu-item  index="/user/create" >
-          <i class="el-icon-magic-stick"></i>
-          <span class="home-menu-title" >创作</span>
+        <el-menu-item index="/user/create">
+          <i class="el-icon-edit"></i>
+          <span class="home-menu-title">创作</span>
         </el-menu-item>
-        <el-sub-menu index="/user/menu/manger">
-          <template #title>
-            <i class="el-icon-reading"></i>
-            <span class="home-menu-title">管理</span>
-          </template>
-          <el-menu-item index="/user/menu/manger/article"
-            >&nbsp;&nbsp;&nbsp;作品管理</el-menu-item
-          >
-          <el-menu-item index="/user/menu/manger/comment"
-            >&nbsp;&nbsp;&nbsp;评论管理</el-menu-item
-          >
-        </el-sub-menu>
-        <el-sub-menu index="/user/menu/data">
-          <template #title>
-            <i class="el-icon-reading"></i>
-            <span class="home-menu-title">数据</span>
-          </template>
-          <el-menu-item index="/user/menu/data/article"
-            >&nbsp;&nbsp;&nbsp;作品数据</el-menu-item
-          >
-          <el-menu-item index="/user/menu/data/fans"
-            >&nbsp;&nbsp;&nbsp;粉丝数据</el-menu-item
-          >
-        </el-sub-menu>
+
+        <el-menu-item index="/user/menu/data/fans">
+          <i class="el-icon-pie-chart"></i>
+          <span class="home-menu-title">数据</span>
+        </el-menu-item>
+
         <el-menu-item index="/user/menu/setup">
-          <i class="el-icon-magic-stick"></i>
+          <i class="el-icon-s-tools"></i>
           <span class="home-menu-title">设置</span>
         </el-menu-item>
       </el-menu>
@@ -84,12 +66,10 @@ export default {
 
 <style lang="less" scoped>
 .menu-con {
-  // background-color: pink;
   height: calc(100vh - 66px);
   display: flex;
   .menu-left {
-    width: 200px;
-    //   background-color: pink;
+    width: 100px;
     height: 100%;
     .el-menu {
       border-right: 0;
@@ -103,7 +83,7 @@ export default {
     height: 100%;
     box-sizing: border-box;
     background-color: #f8f8f8;
-    padding: 20px 40px 20px 10px;
+    padding: 20px 10px 20px 10px;
     // background-color: pink;
     .menu-right-con {
       width: 100%;

@@ -22,6 +22,7 @@
               :headers="uploaderHeader"
               :on-success="onSuccess"
               :show-file-list="false"
+              :before-upload="beforeAvatarUpload"
             >
               <img :src="form.data.avatar" />
               <span v-show="form.data.avatar" class="avatar-span"
@@ -167,21 +168,9 @@ export default {
       update();
     }
     // 获取用户信息
-    
+
     function getData() {
-      form.data=JSON.parse(localStorage.user)
-      // proxy
-      //   .http({
-      //     method: "post",
-      //     path: "/verify",
-      //   })
-      //   .then((res) => {
-      //     if (res.code == 200) {
-      //       form.data = res.user;
-      //     } else {
-      //       proxy.$message.error("登录认证失败");
-      //     }
-      //   });
+      form.data = JSON.parse(localStorage.user);
     }
 
     // 修改用户信息
@@ -193,7 +182,7 @@ export default {
           params: form.data,
         })
         .then((res) => {
-          console.log(res)
+          console.log(res);
           if (res.code == 200) {
             proxy.$message.success("个人信息修改成功");
             proxy.$store.commit(
@@ -272,6 +261,19 @@ export default {
       showPwd.value = false;
     }
 
+    // 上传头像的回调
+    function beforeAvatarUpload(file) {
+      const isJPG = file.type === "image/jpeg" || file.type === "image/png";
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      if (!isJPG) {
+        proxy.$message.error("封面图片只能是 JPEG或者PNG 格式!");
+      }
+      if (!isLt2M) {
+        proxy.$message.error("封面图片大小不能超过 2MB!");
+      }
+      return isJPG && isLt2M;
+    }
+
     return {
       uploaderHeader,
       onSuccess,
@@ -288,11 +290,12 @@ export default {
       showEmail,
       showPwd,
       pwd,
+      beforeAvatarUpload
     };
   },
   // 每次进入组件的时候 重新请求
   created() {
-    console.log("hello")
+    console.log("hello");
     this.getData();
   },
 };
