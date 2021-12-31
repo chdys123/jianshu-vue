@@ -17,7 +17,7 @@
           <span class="label">用户头像</span>
           <span class="content">
             <el-upload
-              action="http://localhost:3000/upload/img"
+              :action='src'
               name="myfile"
               :headers="uploaderHeader"
               :on-success="onSuccess"
@@ -274,6 +274,8 @@ export default {
       return isJPG && isLt2M;
     }
 
+    let src=ref(proxy.address+'upload/img')
+
     return {
       uploaderHeader,
       onSuccess,
@@ -290,7 +292,8 @@ export default {
       showEmail,
       showPwd,
       pwd,
-      beforeAvatarUpload
+      beforeAvatarUpload,
+      src
     };
   },
   // 每次进入组件的时候 重新请求

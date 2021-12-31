@@ -15,8 +15,6 @@
             v-text="article.title"
             @input="input($event)"
           ></div>
-
-          
           <span
             class="create-t-t"
             :class="article.title.length > 30 ? 'over30' : ''"
@@ -34,7 +32,7 @@
               <div class="create-upload">
                 <el-upload
                   class="avatar-uploader"
-                  action="http://localhost:3000/upload/img"
+                  :action="src"
                   :headers="uploaderHeader"
                   :show-file-list="false"
                   name="myfile"
@@ -54,7 +52,7 @@
 
                 <el-upload
                   class="avatar-uploader"
-                  action="http://localhost:3000/upload/img"
+                  :action="src"
                   :headers="uploaderHeader"
                   :show-file-list="false"
                   name="myfile"
@@ -72,7 +70,7 @@
 
                 <el-upload
                   class="avatar-uploader"
-                  action="http://localhost:3000/upload/img"
+                  :action="src"
                   :headers="uploaderHeader"
                   :show-file-list="false"
                   name="myfile"
@@ -89,7 +87,7 @@
                 </el-upload>
                 <el-upload
                   class="avatar-uploader"
-                  action="http://localhost:3000/upload/img"
+                  :action="src"
                   :headers="uploaderHeader"
                   :show-file-list="false"
                   name="myfile"
@@ -365,6 +363,9 @@ export default {
     // 文章的Id
     let articleId = ref("");
 
+    let src=ref(proxy.address+'upload/img')
+    
+
     return {
       editor,
       submit,
@@ -379,6 +380,7 @@ export default {
       cgTips,
       draftId,
       articleId,
+      src
      
 
     };

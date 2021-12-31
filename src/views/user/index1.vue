@@ -33,7 +33,6 @@ export default {
       // 然后到登录页面
       proxy.$router.push("/login");
     };
-
     return {
       quit,
     };
