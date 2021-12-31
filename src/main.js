@@ -20,10 +20,7 @@ import 'highlight.js/styles/monokai-sublime.css'
 
 const app = createApp(App)
 app.config.globalProperties.http=http
-
-
-
-
-
+// 服务器地址
+app.config.globalProperties.address="http://localhost:3000/"
 
 app.use(element).use(svgIcons).use(store).use(VueAxios, axios).use(router).use(VueVirtualScroller).mount('#app')

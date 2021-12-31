@@ -6,6 +6,8 @@
     <div class="create-con2">
       <div class="create-con21">
         <div class="create-article-title">
+
+
           <div
             contenteditable="true"
             class="textarea"
@@ -13,6 +15,8 @@
             v-text="article.title"
             @input="input($event)"
           ></div>
+
+          
           <span
             class="create-t-t"
             :class="article.title.length > 30 ? 'over30' : ''"
@@ -30,7 +34,7 @@
               <div class="create-upload">
                 <el-upload
                   class="avatar-uploader"
-                  action="http://139.155.71.189:3000/upload/img"
+                  action="http://localhost:3000/upload/img"
                   :headers="uploaderHeader"
                   :show-file-list="false"
                   name="myfile"
@@ -50,7 +54,7 @@
 
                 <el-upload
                   class="avatar-uploader"
-                  action="http://139.155.71.189:3000/upload/img"
+                  action="http://localhost:3000/upload/img"
                   :headers="uploaderHeader"
                   :show-file-list="false"
                   name="myfile"
@@ -68,7 +72,7 @@
 
                 <el-upload
                   class="avatar-uploader"
-                  action="http://139.155.71.189:3000/upload/img"
+                  action="http://localhost:3000/upload/img"
                   :headers="uploaderHeader"
                   :show-file-list="false"
                   name="myfile"
@@ -85,7 +89,7 @@
                 </el-upload>
                 <el-upload
                   class="avatar-uploader"
-                  action="http://139.155.71.189:3000/upload/img"
+                  action="http://localhost:3000/upload/img"
                   :headers="uploaderHeader"
                   :show-file-list="false"
                   name="myfile"
@@ -420,8 +424,7 @@ export default {
       // 创建wangeditor实例
       this.editor.data = new Editor("#toolbar-container", "#text-container");
       // 配置上传图片接口地址
-      this.editor.data.config.uploadImgServer =
-        "http://139.155.71.189:3000/upload/editor/img";
+      this.editor.data.config.uploadImgServer =this.address+'upload/editor/img'
       // 图片字段名
       this.editor.data.config.uploadFileName = "editorFile";
       // 图片请求头
